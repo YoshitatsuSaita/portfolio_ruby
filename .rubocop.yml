@@ -1,0 +1,73 @@
+plugins:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+  Exclude:
+    - "db/**/*"
+    - "bin/**/*"
+    - "config/**/*"
+    - "vendor/**/*"
+    - "node_modules/**/*"
+
+# 日本語コメントを許可
+Style/AsciiComments:
+  Enabled: false
+
+# 1行の最大文字数（コーディング規約に合わせて80文字）
+Layout/LineLength:
+  Max: 80
+
+# frozen_string_literal マジックコメントを強制しない
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# シングルクォートを強制（コーディング規約に合わせる）
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+# メトリクス
+Metrics/MethodLength:
+  Max: 40
+Metrics/AbcSize:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+
+# i18n対応は別タスクで実施
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+# ヘルパー内のインスタンス変数（SessionsHelperのキャッシュパターン）
+Rails/HelperInstanceVariable:
+  Enabled: false
+
+# update_attribute の意図的使用を許容
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# RSpec - 日本語コンテキストはwhen/with/withoutで始まらないため無効化
+RSpec/ContextWording:
+  Enabled: false
+
+# テストの可読性のため例の長さを緩和
+RSpec/ExampleLength:
+  Max: 20
+
+# 複数のexpectを1itにまとめているケースを許容
+RSpec/MultipleExpectations:
+  Enabled: false
+
+# 同じbodyを持つcontextの重複（日本語テストの構造上）
+RSpec/RepeatedExampleGroupBody:
+  Enabled: false
+
+# ネストの深さを緩和（describe > context > contextの構造）
+RSpec/NestedGroups:
+  Max: 4

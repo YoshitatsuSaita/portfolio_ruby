@@ -1,0 +1,38 @@
+services:
+  - type: web
+    runtime: docker
+    name: haiku-app
+    repo: https://github.com/YoshitatsuSaita/portfolio_ruby.git
+    branch: main
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /
+
+    envVars:
+      - key: RAILS_ENV
+        value: production
+
+      - key: RAILS_MASTER_KEY
+        sync: false
+
+      - key: SECRET_KEY_BASE
+        generateValue: true
+
+      - key: DATABASE_URL
+        sync: false
+
+      - key: GEMINI_API_KEY
+        sync: false
+
+      - key: RAILS_MAX_THREADS
+        value: "5"
+
+      - key: PORT
+        value: "3000"
+
+      - key: RAILS_SERVE_STATIC_FILES
+        value: "true"
+
+      - key: RAILS_LOG_TO_STDOUT
+        value: "true"
