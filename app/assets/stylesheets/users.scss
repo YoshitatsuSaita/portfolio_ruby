@@ -1,0 +1,34 @@
+/* 入力フォーム */
+
+.label-signup {
+  margin-top: 5px;
+}
+
+.btn-signup {
+  margin-top: 10px;
+}
+
+.label-user--edit {
+  margin-top: 5px;
+}
+
+.btn-user--edit {
+  margin-top: 10px;
+}
+
+/* ユーザー一覧ページ */
+
+.table-users {
+  > thead > tr > th,
+  > tbody > tr > th,
+  > tfoot > tr > th {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  > tbody > tr > td,
+  > tfoot > tr > td {
+    text-align: center;
+    vertical-align: middle;
+  }
+}

@@ -24,6 +24,10 @@ Layout/LineLength:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+# クラス・モジュールのドキュメントコメントは不要
+Style/Documentation:
+  Enabled: false
+
 # シングルクォートを強制（コーディング規約に合わせる）
 Style/StringLiterals:
   EnforcedStyle: single_quotes

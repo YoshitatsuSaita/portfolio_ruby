@@ -6,7 +6,8 @@ FROM ruby:${RUBY_VERSION}-slim AS base
 WORKDIR /myapp
 
 ENV RAILS_ENV="development" \
-  BUNDLE_PATH="/usr/local/bundle"
+  BUNDLE_PATH="/usr/local/bundle" \
+  BUNDLE_WITHOUT="production"
 
 # Throw-away build stage to reduce size of final image
 FROM base as build
@@ -23,7 +24,7 @@ COPY . .
 
 RUN bundle exec bootsnap precompile app/ lib/
 
-RUN RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Final stage for app image
 FROM base
