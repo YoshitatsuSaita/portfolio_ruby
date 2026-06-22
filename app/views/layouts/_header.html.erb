@@ -13,6 +13,15 @@
               <%= link_to 'ユーザー一覧',
                   users_path %>
             </li>
+            <li>
+              <%= link_to pending_review_haikus_path do %>
+                評価待ち
+                <% count = Haiku.pending_review.count %>
+                <% if count.positive? %>
+                  <span class="badge"><%= count %></span>
+                <% end %>
+              <% end %>
+            </li>
           <% end %>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle"

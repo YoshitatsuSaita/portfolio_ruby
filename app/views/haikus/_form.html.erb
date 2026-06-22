@@ -35,11 +35,9 @@
   <div class="form-group">
     <%= f.label :status, '公開設定' %>
     <%= f.select :status,
-        Haiku.statuses.keys
-             .reject { |s| s == 'submitted_to_admin' }
-             .map { |s|
-               [t("haiku.status.#{s}"), s]
-             },
+        Haiku.statuses.keys.map { |s|
+          [t("haiku.status.#{s}"), s]
+        },
         {},
         class: 'form-control' %>
   </div>

@@ -4,6 +4,8 @@ class HaikusController < ApplicationController
                 only: %i[show edit update destroy]
   before_action :correct_haiku_user,
                 only: %i[edit update destroy]
+  before_action :viewable_haiku, only: :show
+  before_action :admin_user, only: :pending_review
 
   def index
     @haikus = Haiku.visible
@@ -52,6 +54,13 @@ class HaikusController < ApplicationController
                           .paginate(page: params[:page])
   end
 
+  def pending_review
+    @haikus = Haiku.pending_review
+                   .includes(:user)
+                   .order(created_at: :desc)
+                   .paginate(page: params[:page])
+  end
+
   private
 
   def set_haiku
@@ -67,6 +76,15 @@ class HaikusController < ApplicationController
 
   def correct_haiku_user
     return if @haiku.user == current_user
+
+    flash[:danger] = '権限がありません。'
+    redirect_to root_url
+  end
+
+  def viewable_haiku
+    return if @haiku.published?
+    return if @haiku.user == current_user
+    return if current_user.admin?
 
     flash[:danger] = '権限がありません。'
     redirect_to root_url

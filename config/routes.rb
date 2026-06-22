@@ -8,7 +8,10 @@ Rails.application.routes.draw do
 
   resources :users
   resources :haikus do
-    get :mine, on: :collection
+    collection do
+      get :mine
+      get :pending_review
+    end
   end
 
   get 'up' => 'rails/health#show', as: :rails_health_check

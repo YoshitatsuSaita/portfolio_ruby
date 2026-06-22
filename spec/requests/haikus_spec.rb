@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Haikus' do
   let(:user) { create(:user) }
+  let(:admin) { create(:user, :admin) }
   let(:other_user) { create(:user) }
   let(:haiku) { create(:haiku, user: user) }
 
@@ -132,6 +133,32 @@ RSpec.describe 'Haikus' do
     end
   end
 
+  describe 'GET /haikus/:id（アクセス制御）' do
+    context '管理者投稿の句の場合' do
+      let(:submitted) do
+        create(:haiku, :submitted, user: user)
+      end
+
+      it '投稿者本人は閲覧できること' do
+        log_in_as(user)
+        get haiku_path(submitted)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it '管理者は閲覧できること' do
+        log_in_as(admin)
+        get haiku_path(submitted)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it '他の一般ユーザーは閲覧できないこと' do
+        log_in_as(other_user)
+        get haiku_path(submitted)
+        expect(response).to redirect_to(root_url)
+      end
+    end
+  end
+
   describe 'GET /haikus/mine' do
     it '自分の俳句一覧が表示されること' do
       log_in_as(user)
@@ -139,6 +166,50 @@ RSpec.describe 'Haikus' do
       create(:haiku, :draft, user: user)
       get mine_haikus_path
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /haikus/pending_review' do
+    context '管理者の場合' do
+      it '評価待ち一覧が表示されること' do
+        log_in_as(admin)
+        create(:haiku, :submitted)
+        get pending_review_haikus_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context '一般ユーザーの場合' do
+      it 'リダイレクトされること' do
+        log_in_as(user)
+        get pending_review_haikus_path
+        expect(response).to redirect_to(root_url)
+      end
+    end
+
+    context '未ログインの場合' do
+      it 'ログインページにリダイレクトされること' do
+        get pending_review_haikus_path
+        expect(response).to redirect_to(login_url)
+      end
+    end
+  end
+
+  describe 'POST /haikus（管理者投稿）' do
+    it '管理者投稿の俳句が作成されること' do
+      log_in_as(user)
+      expect do
+        post haikus_path, params: {
+          haiku: {
+            body: 'ふるいけやかわずとびこむみず',
+            kigo: '蛙',
+            status: 'submitted_to_admin'
+          }
+        }
+      end.to change(Haiku, :count).by(1)
+      expect(
+        Haiku.last.submitted_to_admin?
+      ).to be true
     end
   end
 end

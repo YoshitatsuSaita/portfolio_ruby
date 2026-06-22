@@ -52,9 +52,25 @@ haiku_data.each do |data|
   )
 end
 
+test_user = User.find_by(email: 'test@example.com')
+
 Haiku.create!(
-  user: User.find_by(email: 'test@example.com'),
+  user: test_user,
   body: 'したがきのはいくをかいてみたよ',
   kigo: '春風',
   status: :draft
+)
+
+Haiku.create!(
+  user: test_user,
+  body: 'なつのかぜふくやまのはのゆれるおと',
+  kigo: '夏の風',
+  status: :submitted_to_admin
+)
+
+Haiku.create!(
+  user: users.sample,
+  body: 'あきのそらたかくすんだるつきのかげ',
+  kigo: '秋の空',
+  status: :submitted_to_admin
 )

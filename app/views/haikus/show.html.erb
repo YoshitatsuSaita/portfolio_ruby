@@ -3,7 +3,14 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
     <div class="haiku-show">
-      <p class="haiku-show__body"><%= @haiku.body %></p>
+      <p class="haiku-show__body">
+        <%= @haiku.body %>
+        <% unless @haiku.published? %>
+          <span class="label label-warning">
+            <%= t("haiku.status.#{@haiku.status}") %>
+          </span>
+        <% end %>
+      </p>
       <p class="haiku-show__meta">
         <span class="haiku-show__kigo">
           季語: <%= @haiku.kigo %>

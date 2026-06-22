@@ -59,6 +59,19 @@ RSpec.describe Haiku do
       end
     end
 
+    describe '.pending_review' do
+      let!(:submitted_haiku) do
+        create(:haiku, :submitted)
+      end
+
+      it '管理者投稿の句のみ返すこと' do
+        result = described_class.pending_review
+        expect(result).to include(submitted_haiku)
+        expect(result).not_to include(published_haiku)
+        expect(result).not_to include(draft_haiku)
+      end
+    end
+
     describe '.by_theme' do
       let!(:themed_haiku) do
         create(:haiku, :with_theme)

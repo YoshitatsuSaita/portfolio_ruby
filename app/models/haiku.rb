@@ -13,5 +13,6 @@ class Haiku < ApplicationRecord
   }
 
   scope :visible, -> { published }
+  scope :pending_review, -> { submitted_to_admin }
   scope :by_theme, ->(t) { where(theme: t) }
 end
