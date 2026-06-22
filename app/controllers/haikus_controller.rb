@@ -15,7 +15,10 @@ class HaikusController < ApplicationController
               .paginate(page: params[:page])
   end
 
-  def show; end
+  def show
+    @reviews = @haiku.reviews.includes(:user)
+    @review = current_user_review || @haiku.reviews.build
+  end
 
   def new
     @haiku = current_user.haikus.build
@@ -49,9 +52,14 @@ class HaikusController < ApplicationController
   end
 
   def mine
-    @haikus = current_user.haikus
-                          .order(created_at: :desc)
-                          .paginate(page: params[:page])
+    @haikus = current_user.haikus.order(created_at: :desc)
+    respond_to do |format|
+      format.html do
+        @haikus = @haikus.paginate(page: params[:page])
+      end
+      format.csv { send_csv(@haikus) }
+      format.text { send_text(@haikus) }
+    end
   end
 
   def pending_review
@@ -90,8 +98,26 @@ class HaikusController < ApplicationController
     redirect_to root_url
   end
 
+  def current_user_review
+    @haiku.reviews.find_by(user: current_user)
+  end
+
   def filter_haikus(haikus)
     haikus = haikus.by_theme(params[:theme]) if params[:theme].present?
     haikus
+  end
+
+  def send_csv(haikus)
+    csv = Haiku.to_csv(haikus)
+    send_data csv,
+              filename: "haikus_#{Time.current.strftime('%Y%m%d')}.csv",
+              type: 'text/csv; charset=utf-8'
+  end
+
+  def send_text(haikus)
+    text = Haiku.to_text(haikus)
+    send_data text,
+              filename: "haikus_#{Time.current.strftime('%Y%m%d')}.txt",
+              type: 'text/plain; charset=utf-8'
   end
 end

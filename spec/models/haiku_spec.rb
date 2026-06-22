@@ -85,6 +85,24 @@ RSpec.describe Haiku do
     end
   end
 
+  describe '.to_csv' do
+    it 'CSV文字列を返すこと' do
+      haiku = create(:haiku)
+      csv = described_class.to_csv([haiku])
+      expect(csv).to include(haiku.body)
+      expect(csv).to include(haiku.kigo)
+    end
+  end
+
+  describe '.to_text' do
+    it 'テキスト文字列を返すこと' do
+      haiku = create(:haiku)
+      text = described_class.to_text([haiku])
+      expect(text).to include(haiku.body)
+      expect(text).to include(haiku.kigo)
+    end
+  end
+
   describe 'アソシエーション' do
     it 'ユーザーが削除されると句も削除されること' do
       user = haiku.user

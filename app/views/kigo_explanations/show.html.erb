@@ -1,0 +1,33 @@
+<%= turbo_frame_tag 'kigo_explanation' do %>
+  <div class="kigo-explanation">
+    <% if @error %>
+      <p class="kigo-explanation__error text-danger">
+        <%= @error %>
+      </p>
+    <% elsif @explanation.none_season? %>
+      <p class="kigo-explanation__none">
+        「<%= @explanation.kigo_word %>」は季語ではありません（無季）。
+      </p>
+    <% else %>
+      <h4 class="kigo-explanation__title">
+        季語解説: <%= @explanation.kigo_word %>
+        <% if @explanation.canonical_word.present? %>
+          （正式: <%= @explanation.canonical_word %>）
+        <% end %>
+      </h4>
+      <p class="kigo-explanation__season">
+        季節: <%= @explanation.season %>
+      </p>
+      <% if @explanation.parent_kigo.present? %>
+        <p class="kigo-explanation__parent">
+          親季語: <%= @explanation.parent_kigo %>
+        </p>
+      <% end %>
+      <% if @explanation.explanation.present? %>
+        <p class="kigo-explanation__text">
+          <%= @explanation.explanation %>
+        </p>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

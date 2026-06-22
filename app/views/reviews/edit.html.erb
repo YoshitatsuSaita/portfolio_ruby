@@ -1,0 +1,15 @@
+<% provide(:title, '評価の編集') %>
+<h1>評価の編集</h1>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <p class="review-edit__haiku">
+      対象の句: <%= @haiku.body %>
+    </p>
+    <%= render 'form',
+               haiku: @haiku,
+               review: @review %>
+    <%= link_to '戻る', @haiku,
+        class: 'btn btn-default' %>
+  </div>
+</div>

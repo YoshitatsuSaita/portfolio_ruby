@@ -30,8 +30,16 @@
     <% else %>
       <p>まだ俳句を投稿していません。</p>
     <% end %>
-    <%= link_to '新しい俳句を投稿',
-        new_haiku_path,
-        class: 'btn btn-primary' %>
+    <div class="haiku-mine__actions">
+      <%= link_to '新しい俳句を投稿',
+          new_haiku_path,
+          class: 'btn btn-primary' %>
+      <%= link_to 'CSV出力',
+          mine_haikus_path(format: :csv),
+          class: 'btn btn-default' %>
+      <%= link_to 'テキスト出力',
+          mine_haikus_path(format: :text),
+          class: 'btn btn-default' %>
+    </div>
   </div>
 </div>

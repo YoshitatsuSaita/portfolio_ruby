@@ -1,0 +1,29 @@
+<%= form_with(model: [haiku, review]) do |f| %>
+  <div class="form-group">
+    <%= f.label :score, '評価（1〜5）' %>
+    <%= f.select :score,
+        (1..5).map { |n| ["#{'★' * n}#{'☆' * (5 - n)}", n] },
+        { include_blank: '選択してください' },
+        class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :comment, '寸評' %>
+    <%= f.text_area :comment, class: 'form-control',
+        rows: 3 %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :correction_body, '添削案' %>
+    <%= f.text_field :correction_body,
+        class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :correction_reason, '添削理由' %>
+    <%= f.text_area :correction_reason,
+        class: 'form-control', rows: 2 %>
+  </div>
+
+  <%= f.submit class: 'btn btn-primary' %>
+<% end %>

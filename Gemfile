@@ -46,4 +46,5 @@ group :test do
   gem 'rails-flog', require: 'flog'
   gem 'rspec-rails'
   gem 'selenium-webdriver'
+  gem 'webmock'
 end

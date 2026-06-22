@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :haikus, dependent: :destroy
+  has_many :reviews, dependent: :destroy
 
   attr_accessor :remember_token
 

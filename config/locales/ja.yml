@@ -11,6 +11,7 @@ ja:
     models:
       user: ユーザー
       haiku: 俳句
+      review: 評価
     attributes:
       user:
         name: 名前
@@ -24,6 +25,11 @@ ja:
         theme: お題
         description: 作者メモ
         status: 公開設定
+      review:
+        score: 評価
+        comment: 寸評
+        correction_body: 添削案
+        correction_reason: 添削理由
     errors:
       messages:
         blank: を入力してください
@@ -36,6 +42,13 @@ ja:
       haiku:
         create: 投稿する
         update: 更新する
+      review:
+        create: 評価する
+        update: 更新する
+  will_paginate:
+    previous_label: '← 前へ'
+    next_label: '次へ →'
+    page_gap: '...'
   haiku:
     status:
       draft: 下書き

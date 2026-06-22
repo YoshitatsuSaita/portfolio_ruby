@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_21_145002) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_22_045447) do
   create_table "haikus", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "body", null: false
@@ -21,6 +21,31 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_145002) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_haikus_on_user_id"
+  end
+
+  create_table "kigo_explanations", charset: "utf8mb4", force: :cascade do |t|
+    t.string "kigo_word", null: false
+    t.string "canonical_word"
+    t.string "parent_kigo"
+    t.string "season", null: false
+    t.text "explanation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["kigo_word"], name: "index_kigo_explanations_on_kigo_word", unique: true
+  end
+
+  create_table "reviews", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "haiku_id", null: false
+    t.integer "score", null: false
+    t.text "comment"
+    t.string "correction_body"
+    t.text "correction_reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["haiku_id"], name: "index_reviews_on_haiku_id"
+    t.index ["user_id", "haiku_id"], name: "index_reviews_on_user_id_and_haiku_id", unique: true
+    t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
@@ -36,4 +61,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_145002) do
   end
 
   add_foreign_key "haikus", "users"
+  add_foreign_key "reviews", "haikus"
+  add_foreign_key "reviews", "users"
 end

@@ -5,3 +5,6 @@ const application = Application.start()
 
 import CharCountController from "controllers/char_count_controller"
 application.register("char-count", CharCountController)
+
+import BlindAuthorController from "controllers/blind_author_controller"
+application.register("blind-author", BlindAuthorController)

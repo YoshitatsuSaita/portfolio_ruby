@@ -3,6 +3,9 @@ ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 abort('Production mode!') if Rails.env.production?
 require 'rspec/rails'
+require 'webmock/rspec'
+
+WebMock.disable_net_connect!(allow_localhost: true)
 
 begin
   ActiveRecord::Migration.maintain_test_schema!
