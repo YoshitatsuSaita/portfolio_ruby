@@ -11,6 +11,9 @@ AllCops:
     - "config/**/*"
     - "vendor/**/*"
     - "node_modules/**/*"
+    - "app/views/**/*"
+    - "app/assets/**/*"
+    - "config/locales/**/*"
 
 # 日本語コメントを許可
 Style/AsciiComments:

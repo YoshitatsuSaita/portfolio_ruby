@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_20_072827) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_21_145002) do
+  create_table "haikus", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "body", null: false
+    t.string "kigo", null: false
+    t.string "theme"
+    t.text "description"
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_haikus_on_user_id"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -23,4 +35,5 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_20_072827) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "haikus", "users"
 end

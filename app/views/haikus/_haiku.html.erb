@@ -1,0 +1,21 @@
+<div class="haiku-card">
+  <p class="haiku-card__body">
+    <%= link_to haiku.body, haiku %>
+  </p>
+  <p class="haiku-card__meta">
+    <span class="haiku-card__kigo">
+      <%= haiku.kigo %>
+    </span>
+    <% if haiku.theme.present? %>
+      <span class="haiku-card__theme">
+        お題: <%= haiku.theme %>
+      </span>
+    <% end %>
+    <span class="haiku-card__author">
+      <%= haiku.user.name %>
+    </span>
+    <span class="haiku-card__time">
+      <%= l haiku.created_at, format: :short %>
+    </span>
+  </p>
+</div>

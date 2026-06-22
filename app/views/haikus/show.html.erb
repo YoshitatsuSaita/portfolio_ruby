@@ -1,0 +1,45 @@
+<% provide(:title, @haiku.body.truncate(20)) %>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="haiku-show">
+      <p class="haiku-show__body"><%= @haiku.body %></p>
+      <p class="haiku-show__meta">
+        <span class="haiku-show__kigo">
+          季語: <%= @haiku.kigo %>
+        </span>
+        <% if @haiku.theme.present? %>
+          <span class="haiku-show__theme">
+            お題: <%= @haiku.theme %>
+          </span>
+        <% end %>
+      </p>
+      <% if @haiku.description.present? %>
+        <p class="haiku-show__description">
+          <%= @haiku.description %>
+        </p>
+      <% end %>
+      <p class="haiku-show__author">
+        投稿者: <%= link_to @haiku.user.name,
+                    @haiku.user %>
+      </p>
+      <p class="haiku-show__time">
+        <%= l @haiku.created_at, format: :long %>
+      </p>
+      <% if @haiku.user == current_user %>
+        <div class="haiku-show__actions">
+          <%= link_to '編集',
+              edit_haiku_path(@haiku),
+              class: 'btn btn-primary' %>
+          <%= link_to '削除',
+              haiku_path(@haiku),
+              data: {
+                turbo_method: :delete,
+                turbo_confirm: '本当に削除しますか？'
+              },
+              class: 'btn btn-danger' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

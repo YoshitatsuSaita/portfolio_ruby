@@ -1,0 +1,20 @@
+<div class="haiku-filter">
+  <%= form_with url: haikus_path, method: :get,
+      local: true do |f| %>
+    <div class="form-inline">
+      <div class="form-group">
+        <%= f.label :theme, 'お題' %>
+        <%= f.select :theme,
+            Haiku.visible
+                 .where.not(theme: [nil, ''])
+                 .distinct.pluck(:theme)
+                 .map { |t| [t, t] },
+            { include_blank: 'すべて',
+              selected: params[:theme] },
+            class: 'form-control' %>
+      </div>
+      <%= f.submit '絞り込む',
+          class: 'btn btn-default' %>
+    </div>
+  <% end %>
+</div>

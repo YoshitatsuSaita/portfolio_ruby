@@ -1,0 +1,43 @@
+ja:
+  time:
+    formats:
+      long: '%Y年%m月%d日 %H:%M'
+      short: '%m/%d %H:%M'
+  date:
+    formats:
+      long: '%Y年%m月%d日'
+      short: '%m/%d'
+  activerecord:
+    models:
+      user: ユーザー
+      haiku: 俳句
+    attributes:
+      user:
+        name: 名前
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード（確認）
+        profile_text: 自己紹介
+      haiku:
+        body: 句
+        kigo: 季語
+        theme: お題
+        description: 作者メモ
+        status: 公開設定
+    errors:
+      messages:
+        blank: を入力してください
+        too_short: は%{count}文字以上で入力してください
+        too_long: は%{count}文字以内で入力してください
+        invalid: は不正な値です
+        taken: はすでに使用されています
+  helpers:
+    submit:
+      haiku:
+        create: 投稿する
+        update: 更新する
+  haiku:
+    status:
+      draft: 下書き
+      published: 公開
+      submitted_to_admin: 管理者へ投稿

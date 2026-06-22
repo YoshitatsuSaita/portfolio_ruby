@@ -1,0 +1,89 @@
+// haiku card
+.haiku-card {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+}
+
+.haiku-card__body {
+  font-size: 1.3em;
+}
+
+.haiku-card__meta {
+  color: #999;
+  font-size: 0.9em;
+}
+
+.haiku-card__kigo {
+  margin-left: 5px;
+}
+
+.haiku-card__theme {
+  margin-left: 10px;
+}
+
+.haiku-card__author {
+  margin-left: 10px;
+}
+
+.haiku-card__time {
+  margin-left: 10px;
+}
+
+// haiku show
+.haiku-show__body {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+}
+
+.haiku-show__meta {
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.haiku-show__kigo {
+  margin-left: 10px;
+}
+
+.haiku-show__theme {
+  margin-left: 10px;
+}
+
+.haiku-show__description {
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  color: #555;
+  margin-top: 15px;
+  padding: 10px 15px;
+}
+
+.haiku-show__author {
+  color: #777;
+  margin-top: 15px;
+}
+
+.haiku-show__time {
+  color: #999;
+  font-size: 0.9em;
+}
+
+.haiku-show__actions {
+  margin-top: 20px;
+}
+
+// haiku form
+.haiku-form__char-count {
+  color: #999;
+  display: block;
+  font-size: 0.85em;
+  margin-top: 5px;
+}
+
+// haiku filter
+.haiku-filter {
+  margin-bottom: 20px;
+
+  .form-group {
+    margin-right: 10px;
+  }
+}

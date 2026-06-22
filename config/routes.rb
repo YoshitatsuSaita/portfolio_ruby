@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   resources :users
+  resources :haikus do
+    get :mine, on: :collection
+  end
 
   get 'up' => 'rails/health#show', as: :rails_health_check
 end

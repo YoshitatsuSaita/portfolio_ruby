@@ -1,0 +1,37 @@
+<% provide(:title, 'マイ俳句') %>
+<h1>マイ俳句</h1>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <% if @haikus.any? %>
+      <%= will_paginate @haikus %>
+      <% @haikus.each do |haiku| %>
+        <div class="haiku-card">
+          <p class="haiku-card__body">
+            <%= link_to haiku.body, haiku %>
+            <% unless haiku.published? %>
+              <span class="label label-warning">
+                <%= t("haiku.status.#{haiku.status}") %>
+              </span>
+            <% end %>
+          </p>
+          <p class="haiku-card__meta">
+            <span class="haiku-card__kigo">
+              <%= haiku.kigo %>
+            </span>
+            <span class="haiku-card__time">
+              <%= l haiku.created_at,
+                  format: :short %>
+            </span>
+          </p>
+        </div>
+      <% end %>
+      <%= will_paginate @haikus %>
+    <% else %>
+      <p>まだ俳句を投稿していません。</p>
+    <% end %>
+    <%= link_to '新しい俳句を投稿',
+        new_haiku_path,
+        class: 'btn btn-primary' %>
+  </div>
+</div>

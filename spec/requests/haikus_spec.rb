@@ -1,0 +1,144 @@
+require 'rails_helper'
+
+RSpec.describe 'Haikus' do
+  let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
+  let(:haiku) { create(:haiku, user: user) }
+
+  def log_in_as(login_user)
+    post login_path, params: {
+      session: {
+        email: login_user.email,
+        password: 'password',
+        remember_me: '0'
+      }
+    }
+  end
+
+  describe 'GET /haikus' do
+    it '俳句一覧が表示されること' do
+      log_in_as(user)
+      create(:haiku)
+      get haikus_path
+      expect(response).to have_http_status(:ok)
+    end
+
+    context '未ログインの場合' do
+      it 'ログインページにリダイレクトされること' do
+        get haikus_path
+        expect(response).to redirect_to(login_url)
+      end
+    end
+
+    context 'お題フィルタの場合' do
+      it 'フィルタされた結果を返すこと' do
+        log_in_as(user)
+        create(:haiku, :with_theme)
+        get haikus_path, params: { theme: '自然' }
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe 'GET /haikus/:id' do
+    it '俳句詳細が表示されること' do
+      log_in_as(user)
+      get haiku_path(haiku)
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'GET /haikus/new' do
+    it '投稿フォームが表示されること' do
+      log_in_as(user)
+      get new_haiku_path
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'POST /haikus' do
+    context '有効なパラメータの場合' do
+      it '俳句が作成されること' do
+        log_in_as(user)
+        expect do
+          post haikus_path, params: {
+            haiku: {
+              body: 'ふるいけやかわずとびこむみず',
+              kigo: '蛙',
+              status: 'published'
+            }
+          }
+        end.to change(Haiku, :count).by(1)
+      end
+    end
+
+    context '無効なパラメータの場合' do
+      it '俳句が作成されないこと' do
+        log_in_as(user)
+        expect do
+          post haikus_path, params: {
+            haiku: {
+              body: '',
+              kigo: '',
+              status: 'published'
+            }
+          }
+        end.not_to change(Haiku, :count)
+      end
+    end
+  end
+
+  describe 'PATCH /haikus/:id' do
+    context '本人の場合' do
+      it '俳句が更新されること' do
+        log_in_as(user)
+        patch haiku_path(haiku), params: {
+          haiku: { body: 'あたらしいはいくをかいたよ' }
+        }
+        expect(haiku.reload.body).to eq(
+          'あたらしいはいくをかいたよ'
+        )
+      end
+    end
+
+    context '他人の場合' do
+      it 'リダイレクトされること' do
+        log_in_as(other_user)
+        patch haiku_path(haiku), params: {
+          haiku: { body: 'かってにへんこう' }
+        }
+        expect(response).to redirect_to(root_url)
+      end
+    end
+  end
+
+  describe 'DELETE /haikus/:id' do
+    context '本人の場合' do
+      it '俳句が削除されること' do
+        log_in_as(user)
+        haiku
+        expect do
+          delete haiku_path(haiku)
+        end.to change(Haiku, :count).by(-1)
+      end
+    end
+
+    context '他人の場合' do
+      it 'リダイレクトされること' do
+        log_in_as(other_user)
+        delete haiku_path(haiku)
+        expect(response).to redirect_to(root_url)
+      end
+    end
+  end
+
+  describe 'GET /haikus/mine' do
+    it '自分の俳句一覧が表示されること' do
+      log_in_as(user)
+      create(:haiku, user: user)
+      create(:haiku, :draft, user: user)
+      get mine_haikus_path
+      expect(response).to have_http_status(:ok)
+    end
+  end
+end
