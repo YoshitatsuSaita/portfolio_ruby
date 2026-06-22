@@ -83,10 +83,15 @@ class HaikusController < ApplicationController
   end
 
   def correct_haiku_user
-    return if @haiku.user == current_user
+    unless @haiku.user == current_user
+      flash[:danger] = '権限がありません。'
+      return redirect_to root_url
+    end
 
-    flash[:danger] = '権限がありません。'
-    redirect_to root_url
+    return unless @haiku.reviewed_by_admin?
+
+    flash[:danger] = '管理者の評価済みのため編集・削除できません。'
+    redirect_to @haiku
   end
 
   def viewable_haiku

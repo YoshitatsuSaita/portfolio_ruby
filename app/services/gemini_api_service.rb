@@ -1,6 +1,6 @@
 class GeminiApiService
   API_URL = 'https://generativelanguage.googleapis.com'.freeze
-  MODEL = 'gemini-2.0-flash-lite'.freeze
+  MODEL = 'gemini-2.5-flash'.freeze
   TIMEOUT = 15
 
   PROMPT_TEMPLATE = <<~PROMPT.freeze
@@ -8,6 +8,9 @@ class GeminiApiService
     以下の語について、季語としての情報をJSON形式で回答してください。
     句の内容には一切触れず、季語の解説のみを行ってください。
 
+    重要な注意:
+    - 確信が持てない場合は推測せず、season を "none" としてください。
+    - 入力された語が子季語の場合、必ず親季語を記載してください。
     語: 「%<kigo>s」
 
     以下のJSON形式で回答してください（コードブロックなし、JSONのみ）:

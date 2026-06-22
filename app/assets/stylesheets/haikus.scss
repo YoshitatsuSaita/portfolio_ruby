@@ -71,6 +71,19 @@
   margin-top: 20px;
 }
 
+// kigo explanation
+.kigo-explanation {
+  background-color: #f7f9fc;
+  border: 1px solid #d0d7e2;
+  border-radius: 6px;
+  margin-top: 15px;
+  padding: 15px 20px;
+}
+
+.kigo-explanation__title {
+  margin-top: 0;
+}
+
 // haiku form
 .haiku-form__char-count {
   color: #999;

@@ -18,7 +18,10 @@
                 評価待ち
                 <% count = Haiku.pending_review.count %>
                 <% if count.positive? %>
-                  <span class="badge"><%= count %></span>
+                  <span class="badge"
+                        style="background-color: #f0ad4e;">
+                    <%= count %>
+                  </span>
                 <% end %>
               <% end %>
             </li>

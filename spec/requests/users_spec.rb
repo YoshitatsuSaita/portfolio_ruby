@@ -127,5 +127,15 @@ RSpec.describe 'Users' do
         end.not_to change(User, :count)
       end
     end
+
+    context '管理者が他の管理者を削除しようとした場合' do
+      it '削除されないこと' do
+        log_in_as(admin)
+        other_admin = create(:user, :admin)
+        expect do
+          delete user_path(other_admin)
+        end.not_to change(User, :count)
+      end
+    end
   end
 end

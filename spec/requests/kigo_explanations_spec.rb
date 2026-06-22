@@ -39,12 +39,12 @@ RSpec.describe 'KigoExplanations' do
 
     context 'APIエラーの場合' do
       before do
-        service = instance_double(GeminiApiService)
-        allow(GeminiApiService).to receive(:new)
+        service = instance_double(GroqApiService)
+        allow(GroqApiService).to receive(:new)
           .and_return(service)
         allow(service).to receive(:explain)
           .and_raise(
-            GeminiApiService::ApiError, 'API error'
+            GroqApiService::ApiError, 'API error'
           )
       end
 

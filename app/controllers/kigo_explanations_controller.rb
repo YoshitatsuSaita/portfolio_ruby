@@ -9,4 +9,10 @@ class KigoExplanationsController < ApplicationController
     @error = '季語の解説を取得できませんでした。' \
              '時間をおいて再度お試しください。'
   end
+
+  def destroy
+    @haiku = Haiku.find(params[:haiku_id])
+    KigoExplanation.find_by(kigo_word: @haiku.kigo)&.destroy
+    redirect_to haiku_kigo_explanation_path(@haiku)
+  end
 end

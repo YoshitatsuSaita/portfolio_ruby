@@ -13,7 +13,7 @@ Rails.application.routes.draw do
       get :pending_review
     end
     resources :reviews, only: %i[create edit update destroy]
-    resource :kigo_explanation, only: :show
+    resource :kigo_explanation, only: %i[show destroy]
   end
 
   get 'up' => 'rails/health#show', as: :rails_health_check

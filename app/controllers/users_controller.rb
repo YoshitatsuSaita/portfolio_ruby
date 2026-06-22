@@ -7,11 +7,11 @@ class UsersController < ApplicationController
   before_action :correct_user, only: %i[edit update]
   before_action :admin_user, only: %i[index destroy]
   before_action :prevent_self_destroy, only: :destroy
-  before_action :prevent_last_admin_destroy,
-                only: :destroy
+  before_action :prevent_admin_destroy, only: :destroy
 
   def index
-    @users = User.paginate(page: params[:page])
+    @users = User.where(admin: false)
+                 .paginate(page: params[:page])
   end
 
   def show; end
@@ -64,11 +64,10 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
 
-  def prevent_last_admin_destroy
-    return unless @user.admin? &&
-                  User.where(admin: true).count <= 1
+  def prevent_admin_destroy
+    return unless @user.admin?
 
-    flash[:danger] = '最後の管理者は削除できません。'
+    flash[:danger] = '管理者は削除できません。'
     redirect_to users_url
   end
 end

@@ -48,21 +48,28 @@
         <%= link_to '季語解説を見る',
             haiku_kigo_explanation_path(@haiku),
             class: 'btn btn-info btn-sm',
-            data: { turbo_frame: 'kigo_explanation' } %>
+            data: { turbo_frame: 'kigo_explanation' },
+            onclick: "this.disabled=true; this.textContent='読み込み中…'; this.classList.replace('btn-info','btn-default')" %>
       <% end %>
       <% if @haiku.user == current_user %>
-        <div class="haiku-show__actions">
-          <%= link_to '編集',
-              edit_haiku_path(@haiku),
-              class: 'btn btn-primary' %>
-          <%= link_to '削除',
-              haiku_path(@haiku),
-              data: {
-                turbo_method: :delete,
-                turbo_confirm: '本当に削除しますか？'
-              },
-              class: 'btn btn-danger' %>
-        </div>
+        <% if @haiku.reviewed_by_admin? %>
+          <p class="text-muted">
+            管理者の評価済みのため編集・削除できません。
+          </p>
+        <% else %>
+          <div class="haiku-show__actions">
+            <%= link_to '編集',
+                edit_haiku_path(@haiku),
+                class: 'btn btn-primary' %>
+            <%= link_to '削除',
+                haiku_path(@haiku),
+                data: {
+                  turbo_method: :delete,
+                  turbo_confirm: '本当に削除しますか？'
+                },
+                class: 'btn btn-danger' %>
+          </div>
+        <% end %>
       <% end %>
     </div>
 

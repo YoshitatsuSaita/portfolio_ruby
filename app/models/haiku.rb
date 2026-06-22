@@ -17,6 +17,10 @@ class Haiku < ApplicationRecord
   scope :pending_review, -> { submitted_to_admin }
   scope :by_theme, ->(t) { where(theme: t) }
 
+  def reviewed_by_admin?
+    reviews.joins(:user).where(users: { admin: true }).exists?
+  end
+
   def self.to_csv(haikus)
     require 'csv'
     CSV.generate do |csv|

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_22_045447) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_22_102750) do
   create_table "haikus", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "body", null: false
@@ -31,6 +31,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_22_045447) do
     t.text "explanation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "child_kigo"
     t.index ["kigo_word"], name: "index_kigo_explanations_on_kigo_word", unique: true
   end
 

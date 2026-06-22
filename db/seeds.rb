@@ -67,6 +67,7 @@ Haiku.create!(
   user: test_user,
   body: 'したがきのはいくをかいてみたよ',
   kigo: '春風',
+  theme: '自然',
   status: :draft
 )
 
@@ -74,6 +75,7 @@ Haiku.create!(
   user: test_user,
   body: 'なつのかぜふくやまのはのゆれるおと',
   kigo: '夏の風',
+  theme: '自然',
   status: :submitted_to_admin
 )
 
