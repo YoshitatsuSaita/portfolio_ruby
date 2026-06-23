@@ -17,6 +17,7 @@ class TopicAssignmentsController < ApplicationController
     user_ids = params[:user_ids]
     theme = params[:theme]&.strip
     message = params[:message]&.strip.presence
+    deadline = params[:deadline].presence
 
     if user_ids.blank? || theme.blank?
       flash[:danger] = 'ユーザーとお題を入力してください。'
@@ -24,11 +25,19 @@ class TopicAssignmentsController < ApplicationController
       return render :new, status: :unprocessable_content
     end
 
-    User.where(id: user_ids, admin: false).find_each do |user|
-      current_user.sent_topic_assignments.create!(
-        user: user, theme: theme, message: message
+    assignments = User.where(id: user_ids, admin: false).map do |user|
+      current_user.sent_topic_assignments.build(
+        user: user, theme: theme, message: message, deadline: deadline
       )
     end
+
+    if assignments.any? { |a| a.invalid? }
+      flash[:danger] = assignments.find(&:invalid?).errors.full_messages.join('、')
+      @users = User.where(admin: false).order(:name)
+      return render :new, status: :unprocessable_content
+    end
+
+    assignments.each(&:save!)
 
     flash[:success] = 'お題を送信しました。'
     redirect_to pending_review_haikus_path

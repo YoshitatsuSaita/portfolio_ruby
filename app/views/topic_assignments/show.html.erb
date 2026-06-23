@@ -13,6 +13,14 @@
           <strong>受信日:</strong>
           <%= @topic_assignment.created_at.strftime('%Y/%m/%d %H:%M') %>
         </p>
+        <% if @topic_assignment.deadline.present? %>
+          <p>
+            <strong>期日:</strong>
+            <span class="<%= 'text-danger' if @topic_assignment.deadline < Date.current %>">
+              <%= @topic_assignment.deadline.strftime('%Y/%m/%d') %>
+            </span>
+          </p>
+        <% end %>
         <% if @topic_assignment.message.present? %>
           <p>
             <strong>メッセージ:</strong><br>

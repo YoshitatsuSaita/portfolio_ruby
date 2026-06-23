@@ -10,6 +10,7 @@
           <th></th>
           <th>お題</th>
           <th>送信者</th>
+          <th>期日</th>
           <th>受信日</th>
           <th></th>
         </tr>
@@ -24,6 +25,13 @@
             </td>
             <td><%= ta.theme %></td>
             <td><%= ta.sender.name %></td>
+            <td>
+              <% if ta.deadline.present? %>
+                <span class="<%= 'text-danger' if ta.deadline < Date.current %>">
+                  <%= ta.deadline.strftime('%Y/%m/%d') %>
+                </span>
+              <% end %>
+            </td>
             <td><%= ta.created_at.strftime('%Y/%m/%d %H:%M') %></td>
             <td>
               <%= link_to '詳細・投稿',

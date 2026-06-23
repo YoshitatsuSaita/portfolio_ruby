@@ -13,6 +13,12 @@
       </div>
 
       <div class="form-group">
+        <%= label_tag :deadline, '期日' %>
+        <%= date_field_tag :deadline, params[:deadline] || 1.week.from_now.to_date,
+            class: 'form-control', min: Date.current %>
+      </div>
+
+      <div class="form-group">
         <%= label_tag :message, 'メッセージ（任意）' %>
         <%= text_area_tag :message, params[:message],
             class: 'form-control', rows: 3 %>
