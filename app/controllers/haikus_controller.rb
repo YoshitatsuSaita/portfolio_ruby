@@ -3,7 +3,9 @@ class HaikusController < ApplicationController
   before_action :set_haiku,
                 only: %i[show edit update destroy]
   before_action :correct_haiku_user,
-                only: %i[edit update destroy]
+                only: %i[edit update]
+  before_action :correct_haiku_owner,
+                only: :destroy
   before_action :viewable_haiku, only: :show
   before_action :admin_user, only: :pending_review
 
@@ -17,11 +19,14 @@ class HaikusController < ApplicationController
 
   def show
     @reviews = @haiku.reviews.includes(:user)
+                     .joins(:user)
+                     .order(Arel.sql('users.admin DESC'), created_at: :asc)
     @review = current_user_review || @haiku.reviews.build
   end
 
   def new
-    @haiku = current_user.haikus.build
+    @haiku = current_user.haikus.build(theme: params[:theme])
+    @from_topic = params[:topic_assignment_id].present?
   end
 
   def edit; end
@@ -90,8 +95,15 @@ class HaikusController < ApplicationController
 
     return unless @haiku.reviewed_by_admin?
 
-    flash[:danger] = '管理者の評価済みのため編集・削除できません。'
+    flash[:danger] = '管理者の評価済みのため編集できません。'
     redirect_to @haiku
+  end
+
+  def correct_haiku_owner
+    return if @haiku.user == current_user
+
+    flash[:danger] = '権限がありません。'
+    redirect_to root_url
   end
 
   def viewable_haiku

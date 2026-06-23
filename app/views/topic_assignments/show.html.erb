@@ -1,0 +1,34 @@
+<% provide(:title, "お題: #{@topic_assignment.theme}") %>
+<h1>お題: <%= @topic_assignment.theme %></h1>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <p>
+          <strong>送信者:</strong>
+          <%= @topic_assignment.sender.name %>
+        </p>
+        <p>
+          <strong>受信日:</strong>
+          <%= @topic_assignment.created_at.strftime('%Y/%m/%d %H:%M') %>
+        </p>
+        <% if @topic_assignment.message.present? %>
+          <p>
+            <strong>メッセージ:</strong><br>
+            <%= simple_format(@topic_assignment.message) %>
+          </p>
+        <% end %>
+      </div>
+    </div>
+
+    <%= link_to 'このお題で俳句を投稿する',
+        new_haiku_path(theme: @topic_assignment.theme,
+                       topic_assignment_id: @topic_assignment.id),
+        class: 'btn btn-primary btn-lg btn-block' %>
+
+    <div style="margin-top: 15px;">
+      <%= link_to '← 通知一覧に戻る', topic_assignments_path %>
+    </div>
+  </div>
+</div>

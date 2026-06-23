@@ -1,0 +1,58 @@
+<% provide(:title, 'お題を送信') %>
+<h1>お題を送信</h1>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <%= form_tag topic_assignments_path, method: :post do %>
+
+      <div class="form-group">
+        <%= label_tag :theme, 'お題' %>
+        <%= text_field_tag :theme, params[:theme],
+            class: 'form-control',
+            placeholder: '例: 夏の思い出' %>
+      </div>
+
+      <div class="form-group">
+        <%= label_tag :message, 'メッセージ（任意）' %>
+        <%= text_area_tag :message, params[:message],
+            class: 'form-control', rows: 3 %>
+      </div>
+
+      <div class="form-group">
+        <label>送信先ユーザー</label>
+        <div class="well" style="max-height: 300px; overflow-y: auto;">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="select-all-users">
+              <strong>全員を選択</strong>
+            </label>
+          </div>
+          <hr style="margin: 5px 0;">
+          <% @users.each do |user| %>
+            <div class="checkbox">
+              <label>
+                <%= check_box_tag 'user_ids[]', user.id, false,
+                    class: 'user-checkbox' %>
+                <%= user.name %>
+              </label>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%= submit_tag '送信する', class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var selectAll = document.getElementById('select-all-users');
+    if (selectAll) {
+      selectAll.addEventListener('change', function() {
+        var checkboxes = document.querySelectorAll('.user-checkbox');
+        checkboxes.forEach(function(cb) { cb.checked = selectAll.checked; });
+      });
+    }
+  });
+</script>

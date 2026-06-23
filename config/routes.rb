@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   resources :users
+  resources :topic_assignments, only: %i[index show new create]
   resources :haikus do
     collection do
       get :mine

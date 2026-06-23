@@ -1,0 +1,41 @@
+<% provide(:title, 'お題通知') %>
+<h1>お題通知</h1>
+
+<div class="col-md-10 col-md-offset-1">
+  <% if @topic_assignments.any? %>
+    <%= will_paginate @topic_assignments %>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th></th>
+          <th>お題</th>
+          <th>送信者</th>
+          <th>受信日</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @topic_assignments.each do |ta| %>
+          <tr class="<%= 'active' unless ta.read? %>">
+            <td>
+              <% unless ta.read? %>
+                <span class="label label-warning">NEW</span>
+              <% end %>
+            </td>
+            <td><%= ta.theme %></td>
+            <td><%= ta.sender.name %></td>
+            <td><%= ta.created_at.strftime('%Y/%m/%d %H:%M') %></td>
+            <td>
+              <%= link_to '詳細・投稿',
+                  topic_assignment_path(ta),
+                  class: 'btn btn-primary btn-xs' %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= will_paginate @topic_assignments %>
+  <% else %>
+    <p>お題通知はまだありません。</p>
+  <% end %>
+</div>

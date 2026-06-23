@@ -1,6 +1,10 @@
 class User < ApplicationRecord
   has_many :haikus, dependent: :destroy
   has_many :reviews, dependent: :destroy
+  has_many :topic_assignments, dependent: :destroy
+  has_many :sent_topic_assignments, class_name: 'TopicAssignment',
+                                    foreign_key: :sender_id,
+                                    dependent: :destroy
 
   attr_accessor :remember_token
 

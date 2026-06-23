@@ -3,27 +3,23 @@
              object: @haiku %>
 
   <div class="form-group">
+    <%= f.label :theme, 'お題' %>
+    <% if @haiku.new_record? && @haiku.theme.present? %>
+      <%= f.text_field :theme, class: 'form-control',
+          readonly: true, style: 'background-color: #f5f5f5;' %>
+    <% else %>
+      <%= f.text_field :theme, class: 'form-control' %>
+    <% end %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :body, '句' %>
-    <%= f.text_field :body, class: 'form-control',
-        data: {
-          controller: 'char-count',
-          char_count_target: 'input',
-          action: 'input->char-count#count'
-        } %>
-    <span class="haiku-form__char-count"
-          data-char-count-target="display">
-      0 / 30文字
-    </span>
+    <%= f.text_field :body, class: 'form-control' %>
   </div>
 
   <div class="form-group">
     <%= f.label :kigo, '季語' %>
     <%= f.text_field :kigo, class: 'form-control' %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :theme, 'お題' %>
-    <%= f.text_field :theme, class: 'form-control' %>
   </div>
 
   <div class="form-group">
@@ -34,8 +30,9 @@
 
   <div class="form-group">
     <%= f.label :status, '公開設定' %>
+    <% status_keys = @from_topic ? %w[draft submitted_to_admin] : Haiku.statuses.keys %>
     <%= f.select :status,
-        Haiku.statuses.keys.map { |s|
+        status_keys.map { |s|
           [t("haiku.status.#{s}"), s]
         },
         {},

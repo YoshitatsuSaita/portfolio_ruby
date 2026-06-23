@@ -52,24 +52,24 @@
             onclick: "this.disabled=true; this.textContent='読み込み中…'; this.classList.replace('btn-info','btn-default')" %>
       <% end %>
       <% if @haiku.user == current_user %>
-        <% if @haiku.reviewed_by_admin? %>
-          <p class="text-muted">
-            管理者の評価済みのため編集・削除できません。
-          </p>
-        <% else %>
-          <div class="haiku-show__actions">
+        <div class="haiku-show__actions">
+          <% if @haiku.reviewed_by_admin? %>
+            <p class="text-muted">
+              管理者の評価済みのため編集できません。
+            </p>
+          <% else %>
             <%= link_to '編集',
                 edit_haiku_path(@haiku),
                 class: 'btn btn-primary' %>
-            <%= link_to '削除',
-                haiku_path(@haiku),
-                data: {
-                  turbo_method: :delete,
-                  turbo_confirm: '本当に削除しますか？'
-                },
-                class: 'btn btn-danger' %>
-          </div>
-        <% end %>
+          <% end %>
+          <%= link_to '削除',
+              haiku_path(@haiku),
+              data: {
+                turbo_method: :delete,
+                turbo_confirm: '本当に削除しますか？'
+              },
+              class: 'btn btn-danger' %>
+        </div>
       <% end %>
     </div>
 
@@ -89,7 +89,7 @@
     <% end %>
 
     <% @reviews.each do |review| %>
-      <div class="review-card">
+      <div class="review-card <%= 'review-card--admin' if review.user.admin? %>">
         <div class="review-card__header">
           <span class="review-card__score">
             <% 5.times do |i| %>
@@ -115,18 +115,8 @@
         <% if review.correction_body.present? %>
           <div class="review-card__correction">
             <p class="review-card__correction-label">
-              添削案:
+              添削案: <%= review.correction_body %>
             </p>
-            <div class="review-card__comparison">
-              <p class="review-card__original">
-                <span class="review-card__tag">元の句</span>
-                <%= @haiku.body %>
-              </p>
-              <p class="review-card__corrected">
-                <span class="review-card__tag">添削案</span>
-                <%= review.correction_body %>
-              </p>
-            </div>
             <% if review.correction_reason.present? %>
               <p class="review-card__correction-reason">
                 理由: <%= review.correction_reason %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_22_102750) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_22_130000) do
   create_table "haikus", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "body", null: false
@@ -49,6 +49,18 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_22_102750) do
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
+  create_table "topic_assignments", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "sender_id", null: false
+    t.bigint "user_id", null: false
+    t.string "theme", null: false
+    t.text "message"
+    t.boolean "read", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sender_id"], name: "index_topic_assignments_on_sender_id"
+    t.index ["user_id"], name: "index_topic_assignments_on_user_id"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -64,4 +76,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_22_102750) do
   add_foreign_key "haikus", "users"
   add_foreign_key "reviews", "haikus"
   add_foreign_key "reviews", "users"
+  add_foreign_key "topic_assignments", "users"
+  add_foreign_key "topic_assignments", "users", column: "sender_id"
 end

@@ -25,5 +25,12 @@ class Review < ApplicationRecord
     return unless haiku.submitted_to_admin?
 
     haiku.published!
+    delete_topic_assignment
+  end
+
+  def delete_topic_assignment
+    return if haiku.theme.blank?
+
+    haiku.user.topic_assignments.where(theme: haiku.theme).destroy_all
   end
 end

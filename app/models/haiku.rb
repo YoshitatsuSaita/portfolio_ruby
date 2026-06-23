@@ -13,12 +13,20 @@ class Haiku < ApplicationRecord
     submitted_to_admin: 2
   }
 
+  after_save :mark_topic_assignment_read, if: :submitted_to_admin?
+
   scope :visible, -> { published }
   scope :pending_review, -> { submitted_to_admin }
   scope :by_theme, ->(t) { where(theme: t) }
 
   def reviewed_by_admin?
     reviews.joins(:user).where(users: { admin: true }).exists?
+  end
+
+  def mark_topic_assignment_read
+    return if theme.blank?
+
+    user.topic_assignments.unread.where(theme: theme).update_all(read: true)
   end
 
   def self.to_csv(haikus)

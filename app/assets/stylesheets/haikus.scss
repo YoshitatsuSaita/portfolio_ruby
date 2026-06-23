@@ -84,6 +84,69 @@
   margin-top: 0;
 }
 
+// review card
+.review-card {
+  background-color: #fafbfc;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  padding: 16px 20px;
+}
+
+.review-card--admin {
+  background-color: #fff8f0;
+  border-color: #f5c78a;
+}
+
+.review-card__header {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.review-card__score {
+  color: #f5a623;
+  font-size: 1.1em;
+}
+
+.review-card__reviewer {
+  font-weight: bold;
+}
+
+.review-card__time {
+  color: #999;
+  font-size: 0.85em;
+  margin-left: auto;
+}
+
+.review-card__comment {
+  margin-bottom: 10px;
+}
+
+.review-card__correction {
+  background-color: #f0f4f8;
+  border-left: 3px solid #4a90d9;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+}
+
+.review-card__correction-label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.review-card__correction-reason {
+  color: #555;
+  font-size: 0.9em;
+  margin-bottom: 0;
+}
+
+.review-card__actions {
+  margin-top: 10px;
+}
+
 // haiku form
 .haiku-form__char-count {
   color: #999;
