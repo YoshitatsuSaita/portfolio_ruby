@@ -1,25 +1,106 @@
-# README
+# オンライン句会
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+俳句の投稿・評価・添削を行うWebアプリケーションです。管理者がお題を出題し、ユーザーが俳句を投稿、管理者が評価・添削するフローを中心に構成されています。
 
-Things you may want to cover:
+## 制作の背景
 
-* Ruby version
+趣味の一環として参加している句会において、募集や査定等で手間がかかっている様子があったため、その解決のために制作。
 
-* System dependencies
+## 使用技術
 
-* Configuration
+| カテゴリ       | 技術                                                    |
+| -------------- | ------------------------------------------------------- |
+| 言語           | Ruby 3.3.0                                              |
+| フレームワーク | Rails 7.1                                               |
+| フロントエンド | Hotwire (Turbo / Stimulus)、Bootstrap (Sass)、Importmap |
+| データベース   | MySQL (開発) / PostgreSQL (本番)                        |
+| 外部API        | Gemini API (gemini-2.5-flash) — 季語解説の自動生成      |
+| 認証           | bcrypt (has_secure_password)                            |
+| テスト         | RSpec、Capybara、Selenium、FactoryBot、WebMock          |
+| コード品質     | RuboCop (rails, rspec)                                  |
+| サーバー       | Puma                                                    |
 
-* Database creation
+## 機能一覧
 
-* Database initialization
+### ユーザー管理
 
-* How to run the test suite
+- ユーザー登録・ログイン・ログアウト (Cookie によるログイン保持)
+- プロフィール編集
+- 管理者 / 一般ユーザーの権限分離
 
-* Services (job queues, cache servers, search engines, etc.)
+### 俳句投稿
 
-* Deployment instructions
+- 俳句の作成・編集・削除
+- 句・季語・お題・作者メモの入力
+- 公開設定 (下書き / 公開 / 管理者へ投稿)
+- 俳句一覧表示 (お題でのフィルタリング、ページネーション)
+- マイ俳句一覧 (CSV / テキスト形式でのエクスポート)
 
-* ...
-# portfolio_ruby
+### 管理者フロー
+
+- お題の出題 (複数ユーザーへ一括送信)
+- 評価待ち俳句の一覧 (未評価件数のバッジ表示)
+- 管理者評価後に俳句を自動公開
+
+### 通知 (お題)
+
+- 管理者からのお題通知の受信・一覧表示
+- 未読バッジ表示 (管理者へ投稿した時点で既読化)
+- 管理者評価完了時に通知を自動削除
+- 通知からの俳句投稿 (お題固定、投稿先を下書き / 管理者へ投稿に限定)
+
+### 評価・添削
+
+- 星評価 (1〜5) と寸評の投稿
+- 添削案・添削理由の記入
+- 1俳句につき1ユーザー1評価の制約
+- 自分の俳句への評価不可
+- 管理者評価はカード先頭に固定表示・背景色で強調
+- 管理者評価済みの俳句は編集不可 (削除は可能)
+
+### 季語解説 (AI)
+
+- Gemini API による季語の自動解説
+- 季節の細分類・親季語・子季語の表示
+- 解説結果のDBキャッシュ (同一季語の再問い合わせ不要)
+- Turbo Frame による非同期読み込み
+
+### その他
+
+- 投稿者ブラインド表示 (ボタンで表示切替)
+- レスポンシブ対応 (Bootstrap)
+- 日本語ローカライズ (rails-i18n)
+
+## ER図 (主要テーブル)
+
+```
+users
+├── haikus (1:N)
+│   └── reviews (1:N)
+├── reviews (1:N)
+├── topic_assignments (1:N)  ※受信者
+└── topic_assignments (1:N)  ※送信者 (sender_id)
+
+kigo_explanations (季語解説キャッシュ)
+```
+
+## セットアップ
+
+```bash
+git clone <repository-url>
+cd portfolio_ruby
+bundle install
+bin/rails db:create db:migrate db:seed
+bin/rails server
+```
+
+環境変数:
+
+| 変数名           | 用途                                 |
+| ---------------- | ------------------------------------ |
+| `GEMINI_API_KEY` | Gemini API キー (季語解説機能に必要) |
+
+## 今後の展望
+
+・お題に応じてランキング機能の作成
+・ユーザーのスコアに応じて属性分け、評価フォームの変更
