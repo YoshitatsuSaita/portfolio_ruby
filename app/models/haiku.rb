@@ -17,7 +17,9 @@ class Haiku < ApplicationRecord
 
   scope :visible, -> { published }
   scope :pending_review, -> { submitted_to_admin }
-  scope :by_theme, ->(t) { where(theme: t) }
+  scope :by_theme, ->(t) { where('theme LIKE ?', "%#{sanitize_sql_like(t)}%") }
+  scope :by_author, ->(name) { joins(:user).where('users.name LIKE ?', "%#{sanitize_sql_like(name)}%") }
+  scope :by_body, ->(text) { where('body LIKE ?', "%#{sanitize_sql_like(text)}%") }
 
   def reviewed_by_admin?
     reviews.joins(:user).where(users: { admin: true }).exists?
@@ -27,19 +29,6 @@ class Haiku < ApplicationRecord
     return if theme.blank?
 
     user.topic_assignments.unread.where(theme: theme).update_all(read: true)
-  end
-
-  def self.to_csv(haikus)
-    require 'csv'
-    CSV.generate do |csv|
-      csv << %w[句 季語 お題 作者メモ 公開設定 投稿日]
-      haikus.each do |h|
-        csv << [
-          h.body, h.kigo, h.theme, h.description,
-          h.status, h.created_at.strftime('%Y-%m-%d')
-        ]
-      end
-    end
   end
 
   def self.to_text(haikus)

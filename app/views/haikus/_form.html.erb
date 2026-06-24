@@ -30,7 +30,7 @@
 
   <div class="form-group">
     <%= f.label :status, '公開設定' %>
-    <% status_keys = @from_topic ? %w[draft submitted_to_admin] : Haiku.statuses.keys %>
+    <% status_keys = @from_topic ? %w[draft submitted_to_admin] : %w[draft published] %>
     <%= f.select :status,
         status_keys.map { |s|
           [t("haiku.status.#{s}"), s]

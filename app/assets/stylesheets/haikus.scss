@@ -163,3 +163,12 @@
     margin-right: 10px;
   }
 }
+
+.haiku-filter__active {
+  display: inline-block;
+  margin-left: 10px;
+
+  .label {
+    margin-right: 5px;
+  }
+}

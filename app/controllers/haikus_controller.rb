@@ -29,7 +29,10 @@ class HaikusController < ApplicationController
     @from_topic = params[:topic_assignment_id].present?
   end
 
-  def edit; end
+  def edit
+    @from_topic = @haiku.theme.present? &&
+                  current_user.topic_assignments.exists?(theme: @haiku.theme)
+  end
 
   def create
     @haiku = current_user.haikus.build(haiku_params)
@@ -62,7 +65,6 @@ class HaikusController < ApplicationController
       format.html do
         @haikus = @haikus.paginate(page: params[:page])
       end
-      format.csv { send_csv(@haikus) }
       format.text { send_text(@haikus) }
     end
   end
@@ -121,14 +123,9 @@ class HaikusController < ApplicationController
 
   def filter_haikus(haikus)
     haikus = haikus.by_theme(params[:theme]) if params[:theme].present?
+    haikus = haikus.by_author(params[:author]) if params[:author].present?
+    haikus = haikus.by_body(params[:body]) if params[:body].present?
     haikus
-  end
-
-  def send_csv(haikus)
-    csv = Haiku.to_csv(haikus)
-    send_data csv,
-              filename: "haikus_#{Time.current.strftime('%Y%m%d')}.csv",
-              type: 'text/csv; charset=utf-8'
   end
 
   def send_text(haikus)
