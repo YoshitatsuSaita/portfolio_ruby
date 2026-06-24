@@ -23,12 +23,8 @@
                   users_path %>
             </li>
             <li>
-              <%= link_to 'お題を送信',
-                  new_topic_assignment_path %>
-            </li>
-            <li>
-              <%= link_to pending_review_haikus_path do %>
-                評価待ち
+              <%= link_to submission_status_topic_assignments_path do %>
+                提出状況
                 <% count = Haiku.pending_review.count %>
                 <% if count.positive? %>
                   <span class="badge"

@@ -1,0 +1,45 @@
+<% provide(:title, '提出状況') %>
+<h1>提出状況</h1>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div style="margin-bottom: 20px;">
+      <%= link_to 'お題を送信', new_topic_assignment_path, class: 'btn btn-primary' %>
+    </div>
+
+    <% if @assignments_by_theme.any? %>
+      <% @assignments_by_theme.each do |theme, assignments| %>
+        <div class="panel panel-default">
+          <div class="panel-heading" style="display: flex; justify-content: space-between; align-items: center;">
+            <h4 style="margin: 0;">お題: <%= theme %></h4>
+            <%= link_to '削除', topic_assignment_path(assignments.first),
+                data: { turbo_method: :delete, turbo_confirm: "お題「#{theme}」の通知をすべて削除しますか？" },
+                class: 'btn btn-danger btn-xs' %>
+          </div>
+          <ul class="list-group">
+            <% assignments.each do |assignment| %>
+              <% haiku = @haikus_by_key[[theme, assignment.user_id]] %>
+              <% if haiku %>
+                <%= link_to haiku, class: 'list-group-item', style: 'display: flex; justify-content: space-between; align-items: center;' do %>
+                  <span><%= assignment.user.name %></span>
+                  <% if haiku.reviewed_by_admin? %>
+                    <span class="label label-success">評価済</span>
+                  <% else %>
+                    <span class="label label-warning">評価待ち</span>
+                  <% end %>
+                <% end %>
+              <% else %>
+                <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
+                  <span><%= assignment.user.name %></span>
+                  <span class="label label-default">未提出</span>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    <% else %>
+      <p>送信済みのお題はありません。</p>
+    <% end %>
+  </div>
+</div>
