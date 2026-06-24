@@ -1,12 +1,12 @@
 ja:
   time:
     formats:
-      long: '%Y年%m月%d日 %H:%M'
-      short: '%m/%d %H:%M'
+      long: "%Y年%m月%d日 %H:%M"
+      short: "%m/%d %H:%M"
   date:
     formats:
-      long: '%Y年%m月%d日'
-      short: '%m/%d'
+      long: "%Y年%m月%d日"
+      short: "%m/%d"
   activerecord:
     models:
       user: ユーザー
@@ -46,11 +46,12 @@ ja:
         create: 評価する
         update: 更新する
   will_paginate:
-    previous_label: '← 前へ'
-    next_label: '次へ →'
-    page_gap: '...'
+    previous_label: "← 前へ"
+    next_label: "次へ →"
+    page_gap: "..."
   haiku:
     status:
       draft: 下書き
       published: 公開
       submitted_to_admin: 管理者へ投稿
+      pending_publication: 公開待ち

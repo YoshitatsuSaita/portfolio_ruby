@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :topic_assignments, only: %i[index show new create edit update destroy] do
     collection do
       get :submission_status
+      post :publish_all
     end
   end
   resources :haikus do

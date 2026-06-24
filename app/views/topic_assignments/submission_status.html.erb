@@ -9,41 +9,67 @@
 
     <% if @assignments_by_theme.any? %>
       <% @assignments_by_theme.each do |theme, assignments| %>
+        <% has_pending_review = assignments.any? { |a| (h = @haikus_by_key[[theme, a.user_id]])&.submitted_to_admin? } %>
+        <% all_pending_pub = !has_pending_review &&
+             assignments.all? { |a| (h = @haikus_by_key[[theme, a.user_id]])&.pending_publication? } &&
+             assignments.first.deadline.present? && assignments.first.deadline < Date.current %>
         <div class="panel panel-default">
-          <div class="panel-heading" style="display: flex; justify-content: space-between; align-items: center;">
-            <h4 style="margin: 0;">お題: <%= theme %>
+          <%
+            header_bg = if has_pending_review
+                          ' background-color: #fce8d2;'
+                        elsif all_pending_pub
+                          ' background-color: #d6eef8;'
+                        end
+          %>
+          <div class="panel-heading" style="display: flex; justify-content: space-between; align-items: center;<%= header_bg %>">
+            <h4 style="margin: 0;">
+              お題: <%= theme %>
               <% if assignments.first.deadline.present? %>
                 <small>（期日: <%= l(assignments.first.deadline) %>）</small>
               <% end %>
             </h4>
-            <div>
-              <%= link_to '編集', edit_topic_assignment_path(assignments.first),
-                  class: 'btn btn-default btn-xs' %>
+            <div style="display: flex; gap: 4px;">
               <%= link_to '削除', topic_assignment_path(assignments.first),
                   data: { turbo_method: :delete, turbo_confirm: "お題「#{theme}」の通知をすべて削除しますか？" },
                   class: 'btn btn-danger btn-xs' %>
+              <%= link_to 'すべて公開', publish_all_topic_assignments_path(theme: theme),
+                  data: { turbo_method: :post, turbo_confirm: "お題「#{theme}」の公開待ちの句をすべて公開しますか？" },
+                  class: 'btn btn-success btn-xs' %>
             </div>
           </div>
-          <ul class="list-group">
-            <% assignments.each do |assignment| %>
-              <% haiku = @haikus_by_key[[theme, assignment.user_id]] %>
-              <% if haiku %>
-                <%= link_to haiku, class: 'list-group-item', style: 'display: flex; justify-content: space-between; align-items: center;' do %>
-                  <span><%= assignment.user.name %></span>
-                  <% if haiku.reviewed_by_admin? %>
-                    <span class="label label-success">評価済</span>
-                  <% else %>
-                    <span class="label label-warning">評価待ち</span>
-                  <% end %>
-                <% end %>
-              <% else %>
-                <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
-                  <span><%= assignment.user.name %></span>
-                  <span class="label label-default">未提出</span>
+          <% total = assignments.size %>
+          <% submitted = assignments.count { |a| @haikus_by_key[[theme, a.user_id]] } %>
+          <% reviewed = assignments.count { |a| (h = @haikus_by_key[[theme, a.user_id]]) && h.reviewed_by_admin? } %>
+          <div class="panel-body">
+            <span class="label label-info">提出 <%= submitted %>/<%= total %> 件</span>
+            <span class="label label-success">評価済 <%= reviewed %>/<%= total %> 件</span>
+            <span style="margin-left: 8px;"><%= assignments.map { |a| a.user.name }.join('、') %></span>
+            <%= link_to '送信先を変更', edit_topic_assignment_path(assignments.first),
+                class: 'btn btn-default btn-xs', style: 'margin-left: 8px;' %>
+          </div>
+          <% displayable = assignments.filter_map { |a| @haikus_by_key[[theme, a.user_id]] }.select { |h| h.submitted_to_admin? || h.pending_publication? } %>
+          <% if displayable.any? %>
+            <ul class="list-group">
+              <% displayable.each do |haiku| %>
+                <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
+                    onclick="if(!event.target.closest('.btn')){window.location='<%= haiku_path(haiku) %>';}">
+                  <span>
+                    <% if haiku.pending_publication? %>
+                      <span class="label label-warning">公開待ち</span>
+                    <% else %>
+                      <span class="label label-default">評価待ち</span>
+                    <% end %>
+                    <span style="margin-left: 8px;"><%= haiku.body %></span>
+                  </span>
+                  <span>
+                    <span class="author-name" style="display: none; margin-right: 8px;"><%= haiku.user.name %></span>
+                    <button class="btn btn-default btn-xs"
+                            onclick="var el=this.previousElementSibling; el.style.display=el.style.display==='none'?'inline':'none';">作者表示</button>
+                  </span>
                 </li>
               <% end %>
-            <% end %>
-          </ul>
+            </ul>
+          <% end %>
         </div>
       <% end %>
     <% else %>

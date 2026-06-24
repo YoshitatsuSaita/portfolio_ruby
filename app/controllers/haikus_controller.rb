@@ -37,6 +37,7 @@ class HaikusController < ApplicationController
   def create
     @haiku = current_user.haikus.build(haiku_params)
     if @haiku.save
+      flash[:info] = "同じお題「#{@haiku.theme}」の以前の投稿を下書きに戻し、差し替えました。" if @haiku.replaced_previous
       flash[:success] = '俳句を投稿しました。'
       redirect_to @haiku
     else
@@ -46,6 +47,7 @@ class HaikusController < ApplicationController
 
   def update
     if @haiku.update(haiku_params)
+      flash[:info] = "同じお題「#{@haiku.theme}」の以前の投稿を下書きに戻し、差し替えました。" if @haiku.replaced_previous
       flash[:success] = '俳句を更新しました。'
       redirect_to @haiku
     else

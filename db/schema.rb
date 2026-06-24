@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_23_110756) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_24_091524) do
   create_table "haikus", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "body", null: false
@@ -58,6 +58,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_23_110756) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "deadline"
+    t.boolean "reviewed", default: false, null: false
     t.index ["sender_id"], name: "index_topic_assignments_on_sender_id"
     t.index ["user_id"], name: "index_topic_assignments_on_user_id"
   end

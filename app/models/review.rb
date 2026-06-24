@@ -24,13 +24,13 @@ class Review < ApplicationRecord
     return unless user.admin?
     return unless haiku.submitted_to_admin?
 
-    haiku.published!
-    delete_topic_assignment
+    haiku.pending_publication!
+    mark_topic_assignment_reviewed
   end
 
-  def delete_topic_assignment
+  def mark_topic_assignment_reviewed
     return if haiku.theme.blank?
 
-    haiku.user.topic_assignments.where(theme: haiku.theme).destroy_all
+    haiku.user.topic_assignments.where(theme: haiku.theme).update_all(reviewed: true)
   end
 end

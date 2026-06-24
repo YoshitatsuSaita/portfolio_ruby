@@ -38,7 +38,7 @@
           <li>
             <%= link_to topic_assignments_path do %>
               通知
-              <% unread_count = current_user.topic_assignments.unread.count %>
+              <% unread_count = current_user.topic_assignments.active.unread.count %>
               <% if unread_count.positive? %>
                 <span class="badge"
                       style="background-color: #d9534f;">

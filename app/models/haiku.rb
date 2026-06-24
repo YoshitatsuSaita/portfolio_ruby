@@ -10,9 +10,13 @@ class Haiku < ApplicationRecord
   enum :status, {
     draft: 0,
     published: 1,
-    submitted_to_admin: 2
+    submitted_to_admin: 2,
+    pending_publication: 3
   }
 
+  attr_accessor :replaced_previous
+
+  before_save :revert_previous_submission, if: :submitted_to_admin?
   after_save :mark_topic_assignment_read, if: :submitted_to_admin?
 
   scope :visible, -> { published }
@@ -23,6 +27,15 @@ class Haiku < ApplicationRecord
 
   def reviewed_by_admin?
     reviews.joins(:user).where(users: { admin: true }).exists?
+  end
+
+  def revert_previous_submission
+    return if theme.blank?
+
+    previous = self.class.where(user_id: user_id, theme: theme, status: :submitted_to_admin)
+    previous = previous.where.not(id: id) if persisted?
+    self.replaced_previous = previous.exists?
+    previous.update_all(status: self.class.statuses[:draft])
   end
 
   def mark_topic_assignment_read

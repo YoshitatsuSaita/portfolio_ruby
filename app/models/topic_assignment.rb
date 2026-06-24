@@ -14,4 +14,5 @@ class TopicAssignment < ApplicationRecord
   end
 
   scope :unread, -> { where(read: false) }
+  scope :active, -> { where(reviewed: false) }
 end
