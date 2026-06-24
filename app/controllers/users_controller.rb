@@ -3,18 +3,20 @@ class UsersController < ApplicationController
                 only: %i[show edit update destroy]
   before_action :logged_in_user,
                 only: %i[index show edit update destroy]
-  before_action :correct_or_admin_user, only: :show
   before_action :correct_user, only: %i[edit update]
-  before_action :admin_user, only: %i[index destroy]
+  before_action :admin_user, only: :destroy
   before_action :prevent_self_destroy, only: :destroy
   before_action :prevent_admin_destroy, only: :destroy
 
   def index
-    @users = User.where(admin: false)
-                 .paginate(page: params[:page])
+    @users = User.paginate(page: params[:page])
   end
 
-  def show; end
+  def show
+    @haiku_count = @user.haikus.published.count
+    @reviewed_count = @user.haikus.published.joins(reviews: :user)
+                          .where(users: { admin: true }).distinct.count
+  end
 
   def new
     @user = User.new

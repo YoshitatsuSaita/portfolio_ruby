@@ -14,14 +14,18 @@
       <% @users.each do |user| %>
         <tr>
           <td><%= link_to user.name, user %></td>
-          <td class="center">
-            <%= link_to '削除', user,
-                data: {
-                  turbo_method: :delete,
-                  turbo_confirm: "#{user.name}を削除してよろしいですか？"
-                },
-                class: 'btn btn-danger btn-xs' %>
-          </td>
+          <% if current_user.admin? && !current_user?(user) %>
+            <td class="center">
+              <%= link_to '削除', user,
+                  data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "#{user.name}を削除してよろしいですか？"
+                  },
+                  class: 'btn btn-danger btn-xs' %>
+            </td>
+          <% else %>
+            <td></td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>

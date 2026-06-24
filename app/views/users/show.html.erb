@@ -1,14 +1,40 @@
 <% provide(:title, @user.name) %>
-<h1><%= @user.name %></h1>
 
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <% if @user.profile_text.present? %>
-      <p><%= @user.profile_text %></p>
-    <% end %>
-    <% if current_user?(@user) %>
-      <%= link_to '設定', edit_user_path(@user),
-          class: 'btn btn-primary' %>
-    <% end %>
+  <div class="col-md-6 col-md-offset-3">
+    <div class="panel panel-default">
+      <div class="panel-heading" style="text-align: center;">
+        <h3 style="margin: 0;"><%= @user.name %></h3>
+      </div>
+      <div class="panel-body">
+        <% if @user.profile_text.present? %>
+          <p><%= @user.profile_text %></p>
+        <% end %>
+        <table class="table" style="margin-bottom: 0;">
+          <tr>
+            <th>投句数</th>
+            <td><%= @haiku_count %> 句</td>
+          </tr>
+          <tr>
+            <th>管理者評価済</th>
+            <td><%= @reviewed_count %> 句</td>
+          </tr>
+        </table>
+      </div>
+      <div class="panel-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <% if current_user?(@user) %>
+            <%= link_to '設定', edit_user_path(@user), class: 'btn btn-primary' %>
+          <% end %>
+        </div>
+        <div>
+          <% if current_user?(@user) %>
+            <%= link_to 'マイ俳句', mine_haikus_path, class: 'btn btn-default' %>
+          <% else %>
+            <%= link_to '作成した俳句', haikus_path(author: @user.name), class: 'btn btn-default' %>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

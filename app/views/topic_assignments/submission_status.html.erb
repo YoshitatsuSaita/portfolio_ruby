@@ -11,10 +11,18 @@
       <% @assignments_by_theme.each do |theme, assignments| %>
         <div class="panel panel-default">
           <div class="panel-heading" style="display: flex; justify-content: space-between; align-items: center;">
-            <h4 style="margin: 0;">お題: <%= theme %></h4>
-            <%= link_to '削除', topic_assignment_path(assignments.first),
-                data: { turbo_method: :delete, turbo_confirm: "お題「#{theme}」の通知をすべて削除しますか？" },
-                class: 'btn btn-danger btn-xs' %>
+            <h4 style="margin: 0;">お題: <%= theme %>
+              <% if assignments.first.deadline.present? %>
+                <small>（期日: <%= l(assignments.first.deadline) %>）</small>
+              <% end %>
+            </h4>
+            <div>
+              <%= link_to '編集', edit_topic_assignment_path(assignments.first),
+                  class: 'btn btn-default btn-xs' %>
+              <%= link_to '削除', topic_assignment_path(assignments.first),
+                  data: { turbo_method: :delete, turbo_confirm: "お題「#{theme}」の通知をすべて削除しますか？" },
+                  class: 'btn btn-danger btn-xs' %>
+            </div>
           </div>
           <ul class="list-group">
             <% assignments.each do |assignment| %>

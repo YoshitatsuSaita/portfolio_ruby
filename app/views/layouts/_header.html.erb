@@ -1,12 +1,12 @@
 <header class="navbar navbar-fixed-top navbar-inverse">
   <div class="container">
-    <%= link_to root_path, class: 'logo' do %>
+    <%= link_to (logged_in? ? current_user : root_path), class: 'logo' do %>
       オンライン句会
       <% if logged_in? %>
         <% if current_user.admin? %>
-          <span class="label label-danger">管理者</span>
+          <span class="label  label-danger">管理者</span>
         <% else %>
-          <span class="label label-inf">一般</span>
+          <span class="label label-success">一般</span>
         <% end %>
       <% end %>
     <% end %>
@@ -17,11 +17,11 @@
           <li>
             <%= link_to '投稿する', new_haiku_path %>
           </li>
-          <% if current_user.admin? %>
             <li>
               <%= link_to 'ユーザー一覧',
                   users_path %>
             </li>
+              <% if current_user.admin? %>
             <li>
               <%= link_to submission_status_topic_assignments_path do %>
                 提出状況
@@ -60,10 +60,6 @@
               <li>
                 <%= link_to 'マイページ',
                     current_user %>
-              </li>
-              <li>
-                <%= link_to '設定',
-                    edit_user_path(current_user) %>
               </li>
               <li class="divider"></li>
               <li>

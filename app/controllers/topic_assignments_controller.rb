@@ -1,6 +1,6 @@
 class TopicAssignmentsController < ApplicationController
   before_action :logged_in_user
-  before_action :admin_user, only: %i[new create submission_status destroy]
+  before_action :admin_user, only: %i[new create edit update submission_status destroy]
 
   def index
     @topic_assignments = current_user.topic_assignments
@@ -45,6 +45,40 @@ class TopicAssignmentsController < ApplicationController
 
   def show
     @topic_assignment = current_user.topic_assignments.find(params[:id])
+  end
+
+  def edit
+    @assignment = TopicAssignment.find(params[:id])
+    @theme = @assignment.theme
+    @deadline = @assignment.deadline
+    @existing_user_ids = TopicAssignment.where(theme: @theme, sender_id: @assignment.sender_id)
+                                        .pluck(:user_id)
+    @users = User.where(admin: false).order(:name)
+  end
+
+  def update
+    assignment = TopicAssignment.find(params[:id])
+    theme = assignment.theme
+    sender_id = assignment.sender_id
+    submitted_user_ids = params[:user_ids]&.map(&:to_i) || []
+    existing_user_ids = TopicAssignment.where(theme: theme, sender_id: sender_id)
+                                       .pluck(:user_id)
+
+    ids_to_add = submitted_user_ids - existing_user_ids
+    ids_to_remove = existing_user_ids - submitted_user_ids
+
+    User.where(id: ids_to_add, admin: false).each do |user|
+      current_user.sent_topic_assignments.create!(
+        user: user, theme: theme, message: assignment.message, deadline: assignment.deadline
+      )
+    end
+
+    if ids_to_remove.any?
+      TopicAssignment.where(theme: theme, sender_id: sender_id, user_id: ids_to_remove).destroy_all
+    end
+
+    flash[:success] = 'お題を更新しました。'
+    redirect_to submission_status_topic_assignments_path
   end
 
   def destroy
