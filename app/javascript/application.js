@@ -11,3 +11,6 @@ application.register("blind-author", BlindAuthorController)
 
 import ModalController from "controllers/modal_controller"
 application.register("modal", ModalController)
+
+import SelectAllController from "controllers/select_all_controller"
+application.register("select-all", SelectAllController)

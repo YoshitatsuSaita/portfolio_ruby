@@ -1,17 +1,16 @@
 class ReviewsController < ApplicationController
   before_action :logged_in_user
   before_action :set_haiku
-  before_action :set_review, only: %i[edit update destroy]
+  before_action :set_review, only: %i[update destroy]
   before_action :correct_review_user,
-                only: %i[edit update destroy]
-
-  def edit; end
+                only: %i[update destroy]
 
   def create
     @review = @haiku.reviews.build(review_params)
     @review.user = current_user
     if @review.save
       flash[:success] = '評価を投稿しました。'
+      return redirect_to submission_status_topic_assignments_path if @haiku.reload.pending_publication?
     else
       flash[:danger] =
         @review.errors.full_messages.join(', ')
@@ -22,10 +21,11 @@ class ReviewsController < ApplicationController
   def update
     if @review.update(review_params)
       flash[:success] = '評価を更新しました。'
-      redirect_to @haiku
+      return redirect_to submission_status_topic_assignments_path if @haiku.pending_publication? && current_user.admin?
     else
-      render :edit, status: :unprocessable_content
+      flash[:danger] = @review.errors.full_messages.join(', ')
     end
+    redirect_to @haiku
   end
 
   def destroy

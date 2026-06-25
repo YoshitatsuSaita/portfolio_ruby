@@ -21,6 +21,7 @@ class HaikusController < ApplicationController
     @reviews = @haiku.reviews.includes(:user)
                      .joins(:user)
                      .order(Arel.sql('users.admin DESC'), created_at: :asc)
+    @reviews = @reviews.where(users: { admin: false }) if @haiku.pending_publication? && !current_user.admin?
     @review = current_user_review || @haiku.reviews.build
   end
 

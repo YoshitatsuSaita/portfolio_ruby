@@ -95,3 +95,11 @@ p {
     color: $state-danger-text;
   }
 }
+
+.haiku-row {
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: #f0f4f8;
+  }
+}

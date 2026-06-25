@@ -4,9 +4,9 @@
       オンライン句会
       <% if logged_in? %>
         <% if current_user.admin? %>
-          <span class="label  label-danger">管理者</span>
+          <span class="label label-danger" style="font-size: 65%; vertical-align: middle;">管理者</span>
         <% else %>
-          <span class="label label-success">一般</span>
+          <span class="label label-success" style="font-size: 65%; vertical-align: middle;">一般</span>
         <% end %>
       <% end %>
     <% end %>
@@ -67,7 +67,8 @@
                     logout_path,
                     data: {
                       turbo_method: :delete
-                    } %>
+                    },
+                    style: 'color: #d9534f;' %>
               </li>
             </ul>
           </li>

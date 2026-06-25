@@ -1,16 +1,12 @@
 class TopicAssignmentsController < ApplicationController
   before_action :logged_in_user
-  before_action :admin_user, only: %i[new create edit update submission_status destroy publish_all]
+  before_action :admin_user, only: %i[create update submission_status destroy publish_all]
 
   def index
     @topic_assignments = current_user.topic_assignments.active
                                      .includes(:sender)
                                      .order(created_at: :desc)
                                      .paginate(page: params[:page])
-  end
-
-  def new
-    @users = User.where(admin: false).order(:id)
   end
 
   def create
@@ -21,8 +17,7 @@ class TopicAssignmentsController < ApplicationController
 
     if user_ids.blank? || theme.blank?
       flash[:danger] = 'ユーザーとお題を入力してください。'
-      @users = User.where(admin: false).order(:id)
-      return render :new, status: :unprocessable_content
+      return redirect_to submission_status_topic_assignments_path
     end
 
     assignments = User.where(id: user_ids, admin: false).map do |user|
@@ -33,8 +28,7 @@ class TopicAssignmentsController < ApplicationController
 
     if assignments.any? { |a| a.invalid? }
       flash[:danger] = assignments.find(&:invalid?).errors.full_messages.join('、')
-      @users = User.where(admin: false).order(:id)
-      return render :new, status: :unprocessable_content
+      return redirect_to submission_status_topic_assignments_path
     end
 
     assignments.each(&:save!)
@@ -45,15 +39,6 @@ class TopicAssignmentsController < ApplicationController
 
   def show
     @topic_assignment = current_user.topic_assignments.find(params[:id])
-  end
-
-  def edit
-    @assignment = TopicAssignment.find(params[:id])
-    @theme = @assignment.theme
-    @deadline = @assignment.deadline
-    @existing_user_ids = TopicAssignment.where(theme: @theme, sender_id: @assignment.sender_id)
-                                        .pluck(:user_id)
-    @users = User.where(admin: false).order(:id)
   end
 
   def update
@@ -118,5 +103,6 @@ class TopicAssignmentsController < ApplicationController
                           .where(status: %i[submitted_to_admin pending_publication published])
                           .includes(:user, reviews: :user)
                           .index_by { |h| [h.theme, h.user_id] }
+    @users = User.where(admin: false).order(:id)
   end
 end

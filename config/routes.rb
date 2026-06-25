@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   resources :users
-  resources :topic_assignments, only: %i[index show new create edit update destroy] do
+  resources :topic_assignments, only: %i[index show create update destroy] do
     collection do
       get :submission_status
       post :publish_all
@@ -18,7 +18,7 @@ Rails.application.routes.draw do
       get :mine
       get :pending_review
     end
-    resources :reviews, only: %i[create edit update destroy]
+    resources :reviews, only: %i[create update destroy]
     resource :kigo_explanation, only: %i[show destroy]
   end
 

@@ -125,10 +125,8 @@
           </div>
         <% end %>
         <% if review.user == current_user %>
-          <div class="review-card__actions">
-            <%= link_to '編集',
-                edit_haiku_review_path(@haiku, review),
-                class: 'btn btn-xs btn-primary' %>
+          <div class="review-card__actions" data-controller="modal">
+            <button class="btn btn-xs btn-primary" data-action="modal#open">編集</button>
             <%= link_to '削除',
                 haiku_review_path(@haiku, review),
                 data: {
@@ -136,18 +134,54 @@
                   turbo_confirm: '本当に削除しますか？'
                 },
                 class: 'btn btn-xs btn-danger' %>
+
+            <div class="modal fade" data-modal-target="dialog" tabindex="-1" style="display: none;">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <%= form_with(model: [@haiku, review]) do |f| %>
+                    <div class="modal-header">
+                      <button type="button" class="close" data-action="modal#close">&times;</button>
+                      <h4 class="modal-title">『<%= @haiku.body %>』 の評価を編集</h4>
+                    </div>
+                    <div class="modal-body">
+                      <%= render 'reviews/fields', f: f %>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-action="modal#close">キャンセル</button>
+                      <%= f.submit '更新する', class: 'btn btn-primary' %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
           </div>
         <% end %>
       </div>
     <% end %>
 
-    <% if @haiku.user != current_user &&
-          !@review.persisted? %>
-      <div class="review-form">
-        <h3>評価する</h3>
-        <%= render 'reviews/form',
-                   haiku: @haiku,
-                   review: @review %>
+    <% if @haiku.user != current_user && !@review.persisted? %>
+      <div class="review-form" data-controller="modal">
+        <button class="btn btn-primary" data-action="modal#open">評価する</button>
+
+        <div class="modal fade" data-modal-target="dialog" tabindex="-1" style="display: none;">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <%= form_with(model: [@haiku, @review]) do |f| %>
+                <div class="modal-header">
+                  <button type="button" class="close" data-action="modal#close">&times;</button>
+                  <h4 class="modal-title">『<%= @haiku.body %>』 の評価を作成</h4>
+                </div>
+                <div class="modal-body">
+                  <%= render 'reviews/fields', f: f %>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-action="modal#close">キャンセル</button>
+                  <%= f.submit '投稿する', class: 'btn btn-primary' %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
       </div>
     <% end %>
   </div>

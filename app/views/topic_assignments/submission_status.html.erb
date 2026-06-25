@@ -3,8 +3,60 @@
 
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
-    <div style="margin-bottom: 20px;">
-      <%= link_to 'お題を送信', new_topic_assignment_path, class: 'btn btn-primary' %>
+    <div style="margin-bottom: 20px;" data-controller="modal select-all">
+      <button class="btn btn-primary" data-action="modal#open">お題を送信</button>
+
+      <div class="modal fade" data-modal-target="dialog" tabindex="-1" style="display: none;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <%= form_tag topic_assignments_path, method: :post do %>
+              <div class="modal-header">
+                <button type="button" class="close" data-action="modal#close">&times;</button>
+                <h4 class="modal-title">お題を送信</h4>
+              </div>
+              <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                <div class="form-group">
+                  <%= label_tag :theme, 'お題' %>
+                  <%= text_field_tag :theme, nil, class: 'form-control', placeholder: '例: 夏の思い出' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :deadline, '期日' %>
+                  <%= date_field_tag :deadline, 1.week.from_now.to_date, class: 'form-control', min: Date.current %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :message, 'メッセージ（任意）' %>
+                  <%= text_area_tag :message, nil, class: 'form-control', rows: 3 %>
+                </div>
+                <div class="form-group">
+                  <label>送信先ユーザー</label>
+                  <div class="well" style="max-height: 200px; overflow-y: auto;">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" data-select-all-target="toggle" data-action="select-all#toggle">
+                        <strong>全員を選択</strong>
+                      </label>
+                    </div>
+                    <hr style="margin: 5px 0;">
+                    <% @users.each do |user| %>
+                      <div class="checkbox">
+                        <label>
+                          <%= check_box_tag 'user_ids[]', user.id, false,
+                              data: { select_all_target: 'checkbox', action: 'select-all#update' } %>
+                          <%= user.name %>
+                        </label>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-action="modal#close">キャンセル</button>
+                <%= submit_tag '送信する', class: 'btn btn-primary' %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
 
     <% if @assignments_by_theme.any? %>
@@ -13,7 +65,7 @@
         <% all_pending_pub = !has_pending_review &&
              assignments.all? { |a| (h = @haikus_by_key[[theme, a.user_id]])&.pending_publication? } &&
              assignments.first.deadline.present? && assignments.first.deadline < Date.current %>
-        <div class="panel panel-default">
+        <div class="panel panel-default" data-controller="modal select-all">
           <%
             header_bg = if has_pending_review
                           ' background-color: #fce8d2;'
@@ -44,14 +96,14 @@
             <span class="label label-info">提出 <%= submitted %>/<%= total %> 件</span>
             <span class="label label-success">評価済 <%= reviewed %>/<%= total %> 件</span>
             <span style="margin-left: 8px;"><%= assignments.map { |a| a.user.name }.join('、') %></span>
-            <%= link_to '送信先を変更', edit_topic_assignment_path(assignments.first),
-                class: 'btn btn-default btn-xs', style: 'margin-left: 8px;' %>
+            <button class="btn btn-default btn-xs" style="margin-left: 8px;"
+                    data-action="modal#open">送信先を変更</button>
           </div>
           <% displayable = assignments.filter_map { |a| @haikus_by_key[[theme, a.user_id]] }.select { |h| h.submitted_to_admin? || h.pending_publication? } %>
           <% if displayable.any? %>
             <ul class="list-group">
               <% displayable.each do |haiku| %>
-                <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
+                <li class="list-group-item haiku-row" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
                     onclick="if(!event.target.closest('.btn')){window.location='<%= haiku_path(haiku) %>';}">
                   <span>
                     <% if haiku.pending_publication? %>
@@ -70,6 +122,44 @@
               <% end %>
             </ul>
           <% end %>
+
+          <% assignment = assignments.first %>
+          <% existing_user_ids = assignments.map(&:user_id) %>
+          <div class="modal fade" data-modal-target="dialog" tabindex="-1" style="display: none;">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <%= form_tag topic_assignment_path(assignment), method: :patch do %>
+                  <div class="modal-header">
+                    <button type="button" class="close" data-action="modal#close">&times;</button>
+                    <h4 class="modal-title">送信先を変更 — <%= theme %></h4>
+                  </div>
+                  <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" data-select-all-target="toggle" data-action="select-all#toggle">
+                        <strong>全員を選択</strong>
+                      </label>
+                    </div>
+                    <hr style="margin: 5px 0;">
+                    <% @users.each do |user| %>
+                      <div class="checkbox">
+                        <label>
+                          <%= check_box_tag 'user_ids[]', user.id,
+                              existing_user_ids.include?(user.id),
+                              data: { select_all_target: 'checkbox', action: 'select-all#update' } %>
+                          <%= user.name %>
+                        </label>
+                      </div>
+                    <% end %>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-action="modal#close">キャンセル</button>
+                    <%= submit_tag '更新する', class: 'btn btn-primary' %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
         </div>
       <% end %>
     <% else %>
