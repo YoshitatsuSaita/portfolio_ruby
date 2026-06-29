@@ -5,15 +5,15 @@ FROM ruby:${RUBY_VERSION}-slim AS base
 
 WORKDIR /myapp
 
-ENV RAILS_ENV="development" \
+ENV RAILS_ENV="production" \
   BUNDLE_PATH="/usr/local/bundle" \
-  BUNDLE_WITHOUT="production"
+  BUNDLE_WITHOUT="development:test"
 
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
 RUN apt-get update -qq && \
-  apt-get install --no-install-recommends -y build-essential default-libmysqlclient-dev git libvips pkg-config
+  apt-get install --no-install-recommends -y build-essential libpq-dev git libvips pkg-config
 
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
@@ -30,7 +30,7 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 FROM base
 
 RUN apt-get update -qq && \
-  apt-get install --no-install-recommends -y curl default-mysql-client libvips && \
+  apt-get install --no-install-recommends -y curl libpq5 libvips && \
   rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 COPY --from=build /usr/local/bundle /usr/local/bundle
