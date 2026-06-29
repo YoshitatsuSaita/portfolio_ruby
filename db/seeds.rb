@@ -1,16 +1,18 @@
-User.create!(name: '管理者',
-             email: 'admin@example.com',
-             password: 'password',
-             password_confirmation: 'password',
-             admin: true,
-             profile_text: '俳句アプリの管理者です。')
+User.find_or_create_by!(email: 'admin@example.com') do |user|
+  user.name = '管理者'
+  user.password = 'password'
+  user.password_confirmation = 'password'
+  user.admin = true
+  user.profile_text = '俳句アプリの管理者です。'
+end
 
-User.create!(name: '一般ユーザー',
-             email: 'test@example.com',
-             password: 'password',
-             password_confirmation: 'password',
-             admin: false,
-             profile_text: '俳句を楽しんでいます。')
+User.find_or_create_by!(email: 'test@example.com') do |user|
+  user.name = '一般ユーザー'
+  user.password = 'password'
+  user.password_confirmation = 'password'
+  user.admin = false
+  user.profile_text = '俳句を楽しんでいます。'
+end
 
 unless Rails.env.production?
   60.times do |n|
