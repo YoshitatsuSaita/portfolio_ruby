@@ -6,6 +6,13 @@ User.find_or_create_by!(email: 'admin@example.com') do |user|
   user.profile_text = '俳句アプリの管理者です。'
 end
 
+User.find_or_create_by!(email: 'guest@example.com') do |user|
+  user.name = 'ゲストユーザー'
+  user.password = SecureRandom.urlsafe_base64(16)
+  user.guest = true
+  user.profile_text = 'ゲストとしてログインしています。'
+end
+
 User.find_or_create_by!(email: 'test@example.com') do |user|
   user.name = '一般ユーザー'
   user.password = 'password'

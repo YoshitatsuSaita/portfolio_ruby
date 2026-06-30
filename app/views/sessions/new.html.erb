@@ -21,5 +21,9 @@
     <p>
       ユーザー登録がまだの場合は<%= link_to 'こちら', signup_path %>
     </p>
+
+    <div class="guest-login">
+      <%= button_to 'ゲストとしてログイン', guest_login_path, class: 'btn btn-success btn-block' %>
+    </div>
   </div>
 </div>

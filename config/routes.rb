@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   post   '/login',  to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
 
+  post '/guest_login', to: 'guests#create', as: :guest_login
+
   resources :users
   resources :topic_assignments, only: %i[index show create update destroy] do
     collection do

@@ -1,5 +1,6 @@
 class KigoExplanationsController < ApplicationController
   before_action :logged_in_user
+  before_action :admin_user, only: :destroy
 
   def show
     @haiku = Haiku.find(params[:haiku_id])
