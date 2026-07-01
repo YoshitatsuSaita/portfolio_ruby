@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   post '/guest_login', to: 'guests#create', as: :guest_login
+  post '/guest_admin_login', to: 'guests#create_admin', as: :guest_admin_login
 
   resources :password_resets, only: %i[new create edit update]
 
