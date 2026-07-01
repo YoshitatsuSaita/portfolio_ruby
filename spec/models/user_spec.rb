@@ -83,7 +83,7 @@ RSpec.describe User do
   describe '#authenticated?' do
     context 'remember_digestがnilの場合' do
       it 'falseを返すこと' do
-        expect(user.authenticated?('')).to be false
+        expect(user.authenticated?(:remember, '')).to be false
       end
     end
   end

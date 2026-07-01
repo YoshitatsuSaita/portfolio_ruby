@@ -25,6 +25,12 @@ services:
       - key: GEMINI_API_KEY
         sync: false
 
+      - key: GMAIL_USERNAME
+        sync: false
+
+      - key: GMAIL_PASSWORD
+        sync: false
+
       - key: RAILS_MAX_THREADS
         value: "5"
 

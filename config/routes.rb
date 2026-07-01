@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   post '/guest_login', to: 'guests#create', as: :guest_login
 
+  resources :password_resets, only: %i[new create edit update]
+
   resources :users
   resources :topic_assignments, only: %i[index show create update destroy] do
     collection do
