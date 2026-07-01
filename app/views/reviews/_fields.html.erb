@@ -1,14 +1,6 @@
 <% error_id = f.object.new_record? ? "new_review_errors" : "review_#{f.object.id}_errors" %>
 <div id="<%= error_id %>">
-  <% if f.object.errors.any? %>
-    <div class="alert alert-danger">
-      <ul class="list-unstyled" style="margin-bottom: 0;">
-        <% f.object.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render 'reviews/errors', review: f.object if f.object.errors.any? %>
 </div>
 
 <div class="form-group">
