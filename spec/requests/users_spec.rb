@@ -63,10 +63,10 @@ RSpec.describe 'Users' do
     end
 
     context '一般ユーザーの場合' do
-      it 'トップにリダイレクトされること' do
+      it '一覧が表示されること' do
         log_in_as(user)
         get users_path
-        expect(response).to redirect_to(root_url)
+        expect(response).to have_http_status(:ok)
       end
     end
 

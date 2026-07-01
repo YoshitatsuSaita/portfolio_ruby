@@ -68,11 +68,11 @@ RSpec.describe Review do
         create(:haiku, :submitted, user: user)
       end
 
-      it '句が自動で公開されること' do
+      it '句が公開待ちになること' do
         create(
           :review, user: admin, haiku: submitted_haiku
         )
-        expect(submitted_haiku.reload).to be_published
+        expect(submitted_haiku.reload).to be_pending_publication
       end
     end
 

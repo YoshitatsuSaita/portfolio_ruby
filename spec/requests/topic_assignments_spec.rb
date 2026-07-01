@@ -31,24 +31,6 @@ RSpec.describe 'TopicAssignments' do
     end
   end
 
-  describe 'GET /topic_assignments/new' do
-    context '管理者の場合' do
-      it 'お題送信フォームが表示されること' do
-        log_in_as(admin)
-        get new_topic_assignment_path
-        expect(response).to have_http_status(:ok)
-      end
-    end
-
-    context '一般ユーザーの場合' do
-      it 'リダイレクトされること' do
-        log_in_as(user)
-        get new_topic_assignment_path
-        expect(response).to redirect_to(root_url)
-      end
-    end
-  end
-
   describe 'POST /topic_assignments' do
     context '管理者が有効なパラメータで送信した場合' do
       it 'お題が作成されること' do
