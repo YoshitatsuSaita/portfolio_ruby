@@ -3,8 +3,7 @@ class Review < ApplicationRecord
   belongs_to :haiku
 
   validates :score, presence: true,
-                    inclusion: { in: 1..5,
-                                 allow_nil: true }
+                    inclusion: { in: 1..5 }
   validates :user_id,
             uniqueness: { scope: :haiku_id }
 

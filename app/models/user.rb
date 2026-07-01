@@ -18,6 +18,7 @@ class User < ApplicationRecord
   validates :password, presence: true,
                        length: { minimum: 6 },
                        allow_nil: true
+  validates :profile_text, length: { maximum: 500 }, allow_blank: true
 
   before_save { self.email = email.downcase }
 

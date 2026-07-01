@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   include SessionsHelper
 
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+
   private
 
   def set_user
@@ -35,5 +37,10 @@ class ApplicationController < ActionController::Base
 
     flash[:danger] = '権限がありません。'
     redirect_to root_url
+  end
+
+  def not_found
+    render file: Rails.public_path.join('404.html'), status: :not_found,
+           layout: false
   end
 end
