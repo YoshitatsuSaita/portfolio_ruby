@@ -10,22 +10,19 @@ class ReviewsController < ApplicationController
     @review.user = current_user
     if @review.save
       flash[:success] = '評価を投稿しました。'
-      return redirect_to submission_status_topic_assignments_path if @haiku.reload.pending_publication?
+      redirect_to @haiku.reload.pending_publication? ? submission_status_topic_assignments_path : haiku_path(@haiku)
     else
-      flash[:danger] =
-        @review.errors.full_messages.join(', ')
+      render_review_errors('new_review_errors')
     end
-    redirect_to @haiku
   end
 
   def update
     if @review.update(review_params)
       flash[:success] = '評価を更新しました。'
-      return redirect_to submission_status_topic_assignments_path if @haiku.pending_publication? && current_user.admin?
+      redirect_to @haiku.pending_publication? && current_user.admin? ? submission_status_topic_assignments_path : haiku_path(@haiku)
     else
-      flash[:danger] = @review.errors.full_messages.join(', ')
+      render_review_errors("review_#{@review.id}_errors")
     end
-    redirect_to @haiku
   end
 
   def destroy
@@ -56,5 +53,20 @@ class ReviewsController < ApplicationController
 
     flash[:danger] = '権限がありません。'
     redirect_to @haiku
+  end
+
+  def render_review_errors(target_id)
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update(
+          target_id,
+          partial: 'reviews/errors', locals: { review: @review }
+        ), status: :unprocessable_entity
+      end
+      format.html do
+        flash.now[:danger] = @review.errors.full_messages.join(', ')
+        redirect_to @haiku
+      end
+    end
   end
 end

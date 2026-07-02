@@ -4,7 +4,7 @@ class Haiku < ApplicationRecord
 
   validates :body, presence: true,
                    length: { minimum: 5, maximum: 30 }
-  validates :kigo, presence: true
+  validates :kigo, presence: true, length: { maximum: 20 }
   validates :status, presence: true
 
   enum :status, {
@@ -22,8 +22,12 @@ class Haiku < ApplicationRecord
   scope :visible, -> { published }
   scope :pending_review, -> { submitted_to_admin }
   scope :by_theme, ->(t) { where('theme LIKE ?', "%#{sanitize_sql_like(t)}%") }
-  scope :by_author, ->(name) { joins(:user).where('users.name LIKE ?', "%#{sanitize_sql_like(name)}%") }
-  scope :by_body, ->(text) { where('body LIKE ?', "%#{sanitize_sql_like(text)}%") }
+  scope :by_author, lambda { |name|
+    joins(:user).where('users.name LIKE ?', "%#{sanitize_sql_like(name)}%")
+  }
+  scope :by_body, lambda { |text|
+    where('body LIKE ?', "%#{sanitize_sql_like(text)}%")
+  }
 
   def reviewed_by_admin?
     reviews.joins(:user).where(users: { admin: true }).exists?
@@ -32,7 +36,8 @@ class Haiku < ApplicationRecord
   def revert_previous_submission
     return if theme.blank?
 
-    previous = self.class.where(user_id: user_id, theme: theme, status: :submitted_to_admin)
+    previous = self.class.where(user_id: user_id, theme: theme,
+                                status: :submitted_to_admin)
     previous = previous.where.not(id: id) if persisted?
     self.replaced_previous = previous.exists?
     previous.update_all(status: self.class.statuses[:draft])

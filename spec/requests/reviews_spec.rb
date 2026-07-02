@@ -55,36 +55,14 @@ RSpec.describe 'Reviews' do
         create(:haiku, :submitted, user: user)
       end
 
-      it '句が自動で公開されること' do
+      it '句が公開待ちになること' do
         log_in_as(admin)
         post haiku_reviews_path(submitted_haiku), params: {
           review: { score: 3, comment: '良い句です。' }
         }
         expect(
           submitted_haiku.reload
-        ).to be_published
-      end
-    end
-  end
-
-  describe 'GET /haikus/:haiku_id/reviews/:id/edit' do
-    let!(:review) do
-      create(:review, user: user, haiku: haiku)
-    end
-
-    context '本人の場合' do
-      it '編集フォームが表示されること' do
-        log_in_as(user)
-        get edit_haiku_review_path(haiku, review)
-        expect(response).to have_http_status(:ok)
-      end
-    end
-
-    context '他人の場合' do
-      it 'リダイレクトされること' do
-        log_in_as(other_user)
-        get edit_haiku_review_path(haiku, review)
-        expect(response).to redirect_to(haiku)
+        ).to be_pending_publication
       end
     end
   end

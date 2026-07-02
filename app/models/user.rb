@@ -6,7 +6,7 @@ class User < ApplicationRecord
                                     foreign_key: :sender_id,
                                     dependent: :destroy
 
-  attr_accessor :remember_token
+  attr_accessor :remember_token, :reset_token
 
   validates :name, presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -18,6 +18,7 @@ class User < ApplicationRecord
   validates :password, presence: true,
                        length: { minimum: 6 },
                        allow_nil: true
+  validates :profile_text, length: { maximum: 500 }, allow_blank: true
 
   before_save { self.email = email.downcase }
 
@@ -42,14 +43,30 @@ class User < ApplicationRecord
     )
   end
 
-  def authenticated?(remember_token)
-    return false if remember_digest.nil?
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
 
-    BCrypt::Password.new(remember_digest)
-                    .is_password?(remember_token)
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
   def forget
     update_attribute(:remember_digest, nil)
+  end
+
+  def create_reset_digest
+    self.reset_token = User.new_token
+    update_columns(
+      reset_digest: User.digest(reset_token),
+      reset_sent_at: Time.zone.now
+    )
+  end
+
+  def send_password_reset_email
+    UserMailer.password_reset(self).deliver_now
+  end
+
+  def password_reset_expired?
+    reset_sent_at < 2.hours.ago
   end
 end

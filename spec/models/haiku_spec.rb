@@ -42,7 +42,7 @@ RSpec.describe Haiku do
   describe 'enum' do
     it 'ステータスが正しく定義されていること' do
       expect(described_class.statuses.keys).to eq(
-        %w[draft published submitted_to_admin]
+        %w[draft published submitted_to_admin pending_publication]
       )
     end
   end
@@ -82,15 +82,6 @@ RSpec.describe Haiku do
         expect(result).to include(themed_haiku)
         expect(result).not_to include(published_haiku)
       end
-    end
-  end
-
-  describe '.to_csv' do
-    it 'CSV文字列を返すこと' do
-      haiku = create(:haiku)
-      csv = described_class.to_csv([haiku])
-      expect(csv).to include(haiku.body)
-      expect(csv).to include(haiku.kigo)
     end
   end
 

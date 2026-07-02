@@ -59,7 +59,9 @@ class GeminiApiService
   end
 
   def api_key
-    @api_key ||= ENV.fetch('GEMINI_API_KEY')
+    @api_key ||= ENV.fetch('GEMINI_API_KEY') do
+      raise '環境変数 GEMINI_API_KEY が設定されていません'
+    end
   end
 
   def fetch_from_api(kigo_word)

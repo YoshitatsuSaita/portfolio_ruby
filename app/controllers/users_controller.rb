@@ -7,6 +7,9 @@ class UsersController < ApplicationController
   before_action :admin_user, only: :destroy
   before_action :prevent_self_destroy, only: :destroy
   before_action :prevent_admin_destroy, only: :destroy
+  before_action :prevent_guest_edit, only: %i[edit update]
+  before_action :prevent_guest_destroy, only: :destroy
+  before_action :prevent_guest_action, only: :destroy
 
   def index
     @users = User.paginate(page: params[:page])
@@ -15,7 +18,7 @@ class UsersController < ApplicationController
   def show
     @haiku_count = @user.haikus.published.count
     @reviewed_count = @user.haikus.published.joins(reviews: :user)
-                          .where(users: { admin: true }).distinct.count
+                           .where(users: { admin: true }).distinct.count
   end
 
   def new
@@ -70,6 +73,27 @@ class UsersController < ApplicationController
     return unless @user.admin?
 
     flash[:danger] = '管理者は削除できません。'
+    redirect_to users_url
+  end
+
+  def prevent_guest_edit
+    return unless @user.guest?
+
+    flash[:danger] = 'ゲストユーザーの編集はできません。'
+    redirect_to user_url(@user)
+  end
+
+  def prevent_guest_destroy
+    return unless @user.guest?
+
+    flash[:danger] = 'ゲストユーザーは削除できません。'
+    redirect_to users_url
+  end
+
+  def prevent_guest_action
+    return unless current_user.guest?
+
+    flash[:danger] = 'ゲストユーザーはこの操作を行えません。'
     redirect_to users_url
   end
 end

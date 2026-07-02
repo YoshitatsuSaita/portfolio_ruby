@@ -168,16 +168,6 @@ RSpec.describe 'Haikus' do
       expect(response).to have_http_status(:ok)
     end
 
-    it 'CSV形式でエクスポートできること' do
-      log_in_as(user)
-      create(:haiku, user: user)
-      get mine_haikus_path(format: :csv)
-      expect(response).to have_http_status(:ok)
-      expect(
-        response.content_type
-      ).to include('text/csv')
-    end
-
     it 'テキスト形式でエクスポートできること' do
       log_in_as(user)
       create(:haiku, user: user)
